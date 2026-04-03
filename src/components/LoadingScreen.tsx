@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
 import './LoadingScreen.css';
 
+const DISPLAY_MS = 750;
+const FADE_MS = 180;
+
 export default function LoadingScreen() {
-  const [opening, setOpening] = useState(false);
+  const [ending, setEnding] = useState(false);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const openTimer = window.setTimeout(() => setOpening(true), 700);
-    const hideTimer = window.setTimeout(() => setHidden(true), 2250);
+    const fadeTimer = window.setTimeout(() => {
+      setEnding(true);
+    }, DISPLAY_MS);
+
+    const hideTimer = window.setTimeout(() => {
+      setHidden(true);
+    }, DISPLAY_MS + FADE_MS);
 
     return () => {
-      window.clearTimeout(openTimer);
+      window.clearTimeout(fadeTimer);
       window.clearTimeout(hideTimer);
     };
   }, []);
@@ -18,18 +26,9 @@ export default function LoadingScreen() {
   if (hidden) return null;
 
   return (
-    <div className={`loading-screen ${opening ? 'opening' : ''}`} aria-hidden>
-      <div className="loading-screen__door loading-screen__door--left" />
-      <div className="loading-screen__door loading-screen__door--right" />
-      <div className="loading-screen__press">
-        <div className="loading-screen__ram loading-screen__ram--upper" />
-        <div className="loading-screen__hub" />
-        <div className="loading-screen__ram loading-screen__ram--lower" />
-      </div>
+    <div className={`loading-screen ${ending ? 'ending' : ''}`} aria-hidden>
       <div className="loading-screen__label">
-        <span className="loading-screen__eyebrow">VAULT PRESSURE LOCK</span>
-        <span className="loading-screen__title">Loading 3D Models</span>
-        <span className="loading-screen__status">Please stand by while the scene initializes.</span>
+        Loading 3D Models ...
       </div>
     </div>
   );
