@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { interiorContent } from '../data/content';
-import type { ContactItem, ContentTab, PortfolioItem } from '../data/content';
+import type { ContactItem, ContentTab, PortfolioItem, SkillGroup } from '../data/content';
 import './InteriorPanel.css';
 
 interface Props {
@@ -26,21 +26,95 @@ function MediaPlate({ src, label, className = '' }: { src?: string; label: strin
   );
 }
 
-function PortfolioRow({ item }: { item: PortfolioItem }) {
-  const skillsLine = item.skills.join(' / ');
+function AboutPhotoToggle({ tab }: { tab: ContentTab }) {
+  const hasAlternate = Boolean(tab.alternatePhoto);
+  const [showAlternate, setShowAlternate] = useState(false);
+  const [transitioning, setTransitioning] = useState(false);
+  const swapTimerRef = useRef<number | null>(null);
+  const settleTimerRef = useRef<number | null>(null);
 
+  const currentPhoto = showAlternate && tab.alternatePhoto ? tab.alternatePhoto : tab.photo;
+  const currentLabel = showAlternate && tab.alternatePhotoLabel ? tab.alternatePhotoLabel : (tab.photoLabel || 'Portrait');
+
+  useEffect(() => {
+    return () => {
+      if (swapTimerRef.current) window.clearTimeout(swapTimerRef.current);
+      if (settleTimerRef.current) window.clearTimeout(settleTimerRef.current);
+    };
+  }, []);
+
+  const handleToggle = () => {
+    if (transitioning) return;
+
+    setTransitioning(true);
+
+    if (swapTimerRef.current) window.clearTimeout(swapTimerRef.current);
+    if (settleTimerRef.current) window.clearTimeout(settleTimerRef.current);
+
+    swapTimerRef.current = window.setTimeout(() => {
+      setShowAlternate((value) => !value);
+    }, 140);
+
+    settleTimerRef.current = window.setTimeout(() => {
+      setTransitioning(false);
+    }, 420);
+  };
+
+  return (
+    <div className="profile-layout__photo-wrap">
+      <MediaPlate src={currentPhoto} label={currentLabel} className={`profile-layout__photo ${transitioning ? 'profile-layout__photo--transitioning' : ''}`} />
+      {hasAlternate && (
+        <button
+          className="portfolio-action-button profile-layout__photo-toggle"
+          onClick={handleToggle}
+        >
+          {showAlternate
+            ? (tab.primaryPhotoButtonLabel || 'Show Headshot')
+            : (tab.alternatePhotoButtonLabel || 'Show Casual Photo')}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function PortfolioRow({ item }: { item: PortfolioItem }) {
   return (
     <article className="portfolio-row">
       <MediaPlate src={item.image} label={item.imageLabel} className="portfolio-row__media" />
       <div className="portfolio-row__body">
-        <h4>{item.title}</h4>
+        <div className="portfolio-row__header">
+          <div className="portfolio-row__header-main">
+            <h4>{item.title}</h4>
+            {item.organization && (
+              item.organizationHref ? (
+                <button
+                  className="portfolio-row__organization portfolio-row__organization--link"
+                  onClick={() => openHref(item.organizationHref!, item.organizationExternal)}
+                >
+                  {item.organization}
+                </button>
+              ) : (
+                <div className="portfolio-row__organization">{item.organization}</div>
+              )
+            )}
+          </div>
+          {(item.dates || item.href) && (
+            <div className="portfolio-row__header-side">
+              {item.dates && <div className="portfolio-row__dates">{item.dates}</div>}
+              {item.href && (
+                <button className="portfolio-inline-link" onClick={() => openHref(item.href!, item.external)}>
+                  Open
+                </button>
+              )}
+            </div>
+          )}
+        </div>
         <p>{item.description}</p>
-        <div className="portfolio-row__skills">Skills: {skillsLine}</div>
-        {item.href && (
-          <button className="portfolio-inline-link" onClick={() => openHref(item.href!, item.external)}>
-            Open Project
-          </button>
-        )}
+        <div className="portfolio-row__skills">
+          {item.skills.map((skill) => (
+            <span key={skill} className="portfolio-chip">{skill}</span>
+          ))}
+        </div>
       </div>
     </article>
   );
@@ -48,32 +122,56 @@ function PortfolioRow({ item }: { item: PortfolioItem }) {
 
 function ContactRow({ item }: { item: ContactItem }) {
   return (
-    <div className="contact-row">
-      <span className="contact-row__label">{item.label}</span>
+    <article className="contact-card">
+      <span className="contact-card__label">{item.label}</span>
       {item.href ? (
         <button className="portfolio-inline-link" onClick={() => openHref(item.href!)}>
           {item.value}
         </button>
       ) : (
-        <span className="contact-row__value">{item.value}</span>
+        <span className="contact-card__value">{item.value}</span>
       )}
-    </div>
+    </article>
+  );
+}
+
+function SkillGroupCard({ group }: { group: SkillGroup }) {
+  return (
+    <article className="skill-group-card">
+      <div className="skill-group-card__title">{group.title}</div>
+      <div className="skill-group-card__list">
+        {group.items.map((item) => (
+          <span key={item} className="portfolio-chip">{item}</span>
+        ))}
+      </div>
+    </article>
   );
 }
 
 function renderTab(tab: ContentTab) {
   if (tab.layout === 'about') {
     return (
-      <section className="portfolio-panel portfolio-panel--profile">
-        {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
+      <section className="portfolio-panel portfolio-panel--about">
         <div className="profile-layout">
-          <MediaPlate src={tab.photo} label={tab.photoLabel || 'Portrait'} className="profile-layout__photo" />
-          <div className="profile-layout__bio">
-            {tab.bio?.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+          <AboutPhotoToggle tab={tab} />
+          <section className="profile-layout__intro">
+            {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
+            <div className="profile-layout__bio">
+              {tab.bio?.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          </section>
         </div>
+
+        {tab.skillGroups && (
+          <section className="skills-section">
+            <div className="section-tag">Resume Skills</div>
+            <div className="skills-grid">
+              {tab.skillGroups.map((group) => <SkillGroupCard key={group.title} group={group} />)}
+            </div>
+          </section>
+        )}
       </section>
     );
   }
@@ -82,7 +180,7 @@ function renderTab(tab: ContentTab) {
     return (
       <section className="portfolio-panel">
         {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
-        <div className="contact-list">
+        <div className="contact-grid">
           {tab.contacts?.map((item) => <ContactRow key={`${item.label}-${item.value}`} item={item} />)}
         </div>
       </section>
@@ -92,10 +190,34 @@ function renderTab(tab: ContentTab) {
   return (
     <section className="portfolio-panel">
       {tab.headerImageLabel && <MediaPlate src={tab.headerImage} label={tab.headerImageLabel} className="portfolio-header-image" />}
-      {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
+      {(tab.intro || tab.actionHref) && (
+        <div className="portfolio-panel__topline">
+          {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
+          {tab.actionHref && (
+            <button
+              className="portfolio-action-button"
+              onClick={() => openHref(tab.actionHref!, tab.actionExternal)}
+            >
+              {tab.actionLabel || 'Open'}
+            </button>
+          )}
+        </div>
+      )}
       <div className="portfolio-list">
         {tab.items?.map((item) => <PortfolioRow key={item.title} item={item} />)}
       </div>
+      {tab.secondaryItems && tab.secondaryItems.length > 0 && (
+        <>
+          <div className="portfolio-section-divider" aria-hidden />
+          <section className="portfolio-subsection">
+            {tab.secondaryTitle && <div className="section-tag">{tab.secondaryTitle}</div>}
+            {tab.secondaryIntro && <p className="portfolio-panel__intro">{tab.secondaryIntro}</p>}
+            <div className="portfolio-list">
+              {tab.secondaryItems.map((item) => <PortfolioRow key={item.title} item={item} />)}
+            </div>
+          </section>
+        </>
+      )}
     </section>
   );
 }
@@ -103,12 +225,10 @@ function renderTab(tab: ContentTab) {
 export default function InteriorPanel({ buildingId, onClose }: Props) {
   const [visible, setVisible] = useState(false);
   const content = buildingId ? interiorContent[buildingId] : null;
-  const [activeTabId, setActiveTabId] = useState('');
 
   useEffect(() => {
     if (buildingId && content) {
       setVisible(true);
-      setActiveTabId(content.tabs[0]?.id ?? '');
     } else {
       setVisible(false);
     }
@@ -123,7 +243,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  const activeTab = useMemo(() => content?.tabs.find((tab) => tab.id === activeTabId) ?? content?.tabs[0], [content, activeTabId]);
+  const activeTab = useMemo(() => content?.tabs[0], [content]);
 
   if (!content || !activeTab) return null;
 
@@ -138,6 +258,9 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
     >
       <div className={`interior-frame ${visible ? 'open' : ''}`} style={accentStyle}>
         <div className="interior-frame__trim" aria-hidden />
+        <div className="interior-frame__plate interior-frame__plate--top" aria-hidden />
+        <div className="interior-frame__plate interior-frame__plate--right" aria-hidden />
+
         <header className="portfolio-header">
           <div className="portfolio-header__copy">
             <div className="portfolio-header__kicker">{content.kicker}</div>
@@ -147,26 +270,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
         </header>
 
         <div className="portfolio-body">
-          <aside className="portfolio-tabs-wrap">
-            <div className="portfolio-tabs-wrap__label">Area Index</div>
-            <nav className="portfolio-tabs" aria-label="Content tabs">
-              {content.tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  className={`portfolio-tab ${tab.id === activeTab.id ? 'active' : ''}`}
-                  onClick={() => setActiveTabId(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </aside>
-
-          <main className="portfolio-main">
-            <section className="portfolio-main__header">
-              <div className="portfolio-tab-hero__eyebrow">{content.title}</div>
-              <h3>{activeTab.label}</h3>
-            </section>
+          <main className="portfolio-main portfolio-main--single">
             {renderTab(activeTab)}
           </main>
         </div>

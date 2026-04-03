@@ -135,8 +135,9 @@ export const lightSources: Array<{ col: number; row: number; radius: number; col
   { col: 6.41, row: 10.52, radius: 4, color: '#D4A040', intensity: 0.5 },   // camp (about)
   { col: 12.5, row: 6.1, radius: 4, color: '#40D080', intensity: 0.5 },     // power plant
   { col: 18.59, row: 10.52, radius: 3.5, color: '#D04040', intensity: 0.45 }, // radio tower
-  { col: 8.74, row: 17.68, radius: 4, color: '#D4A040', intensity: 0.45 },  // bunker
-  { col: 16.26, row: 17.68, radius: 4, color: '#D08030', intensity: 0.45 }, // ferris wheel
+  { col: 8.74, row: 17.68, radius: 4.5, color: '#D4A040', intensity: 0.5 },  // bunker
+  { col: 9.65, row: 16.45, radius: 3.4, color: '#E0BE74', intensity: 0.62 }, // bunker front light
+  { col: 16.26, row: 17.68, radius: 4.6, color: '#D08030', intensity: 0.55 }, // ferris wheel
 
   // ─── Street lamps ───
   { col: 8, row: 8, radius: 3, color: '#D4A040', intensity: 0.35 },
