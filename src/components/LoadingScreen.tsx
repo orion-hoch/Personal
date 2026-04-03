@@ -6,8 +6,8 @@ export default function LoadingScreen() {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const openTimer = window.setTimeout(() => setOpening(true), 80);
-    const hideTimer = window.setTimeout(() => setHidden(true), 1080);
+    const openTimer = window.setTimeout(() => setOpening(true), 700);
+    const hideTimer = window.setTimeout(() => setHidden(true), 2250);
 
     return () => {
       window.clearTimeout(openTimer);
@@ -19,16 +19,17 @@ export default function LoadingScreen() {
 
   return (
     <div className={`loading-screen ${opening ? 'opening' : ''}`} aria-hidden>
-      <div className="loading-screen__glow" />
       <div className="loading-screen__door loading-screen__door--left" />
       <div className="loading-screen__door loading-screen__door--right" />
-      <div className="loading-screen__hub">
-        <div className="loading-screen__hub-ring" />
-        <div className="loading-screen__hub-core" />
+      <div className="loading-screen__press">
+        <div className="loading-screen__ram loading-screen__ram--upper" />
+        <div className="loading-screen__hub" />
+        <div className="loading-screen__ram loading-screen__ram--lower" />
       </div>
       <div className="loading-screen__label">
-        <span className="loading-screen__eyebrow">BUNKER ACCESS</span>
-        <span className="loading-screen__title">INITIALIZING WASTELAND</span>
+        <span className="loading-screen__eyebrow">VAULT PRESSURE LOCK</span>
+        <span className="loading-screen__title">Loading 3D Models</span>
+        <span className="loading-screen__status">Please stand by while the scene initializes.</span>
       </div>
     </div>
   );

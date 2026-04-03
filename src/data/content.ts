@@ -60,7 +60,7 @@ export const interiorContent: Record<string, InteriorContent> = {
     kicker: 'Profile',
     intro:
       'I build interactive systems that sit between product design, visual storytelling, and technical prototyping. I like interfaces that feel deliberate, tactile, and a little cinematic.',
-    accent: '#d98a3c',
+    accent: '#405050',
     actions: [
       { label: 'Email', href: 'mailto:hello@example.com', external: true, variant: 'primary' },
       { label: 'GitHub', href: 'https://github.com', external: true },
@@ -140,7 +140,7 @@ export const interiorContent: Record<string, InteriorContent> = {
     kicker: 'Inquiry',
     intro:
       'A research-oriented view of my work: the questions I keep returning to, the systems I want to understand more deeply, and the experiments that shape how I design.',
-    accent: '#ff7a1a',
+    accent: '#404050',
     actions: [
       { label: 'Email', href: 'mailto:hello@example.com', external: true, variant: 'primary' },
       { label: 'CV', href: '/resume.pdf', external: true },
@@ -238,7 +238,7 @@ export const interiorContent: Record<string, InteriorContent> = {
     kicker: 'Reach Out',
     intro:
       'If you want to talk about a project, an internship, a research direction, or a weird prototype idea, this is the easiest place to start.',
-    accent: '#d34f47',
+    accent: '#304040',
     actions: [
       { label: 'Email me', href: 'mailto:hello@example.com', external: true, variant: 'primary' },
       { label: 'GitHub', href: 'https://github.com', external: true },
@@ -311,7 +311,7 @@ export const interiorContent: Record<string, InteriorContent> = {
     kicker: 'Timeline',
     intro:
       'A more standard view of my background: the environments I have worked in, the kinds of responsibilities I gravitate toward, and the toolsets I keep sharp.',
-    accent: '#b38f53',
+    accent: '#303020',
     actions: [
       { label: 'Download resume', href: '/resume.pdf', external: true, variant: 'primary' },
       { label: 'LinkedIn', href: 'https://linkedin.com', external: true },
@@ -414,7 +414,7 @@ export const interiorContent: Record<string, InteriorContent> = {
     kicker: 'Playground',
     intro:
       'The less formal side of my work: self-directed builds, experiments, small systems, and ideas I wanted to chase because they taught me something.',
-    accent: '#8f6bd7',
+    accent: '#303030',
     actions: [
       { label: 'GitHub', href: 'https://github.com', external: true, variant: 'primary' },
       { label: 'CodePen', href: 'https://codepen.io', external: true },

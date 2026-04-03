@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { interiorContent } from '../data/content';
-import type { InteriorContent, PageAction, PageCard, PageSection } from '../data/content';
+import type { PageAction, PageCard, PageSection } from '../data/content';
 import './InteriorPanel.css';
 
 interface Props {
@@ -120,7 +121,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
 
   if (!buildingId || !content || !activeTab) return null;
 
-  const accentStyle = { '--panel-accent': content.accent } as React.CSSProperties;
+  const accentStyle = { '--panel-accent': content.accent } as CSSProperties;
 
   return (
     <div
@@ -131,7 +132,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
     >
       <div className={`interior-frame ${visible ? 'open' : ''}`} style={accentStyle}>
         <header className="portfolio-header">
-          <div>
+          <div className="portfolio-header__copy">
             <div className="portfolio-header__kicker">{content.kicker}</div>
             <h2>{content.title}</h2>
             <p>{content.intro}</p>
@@ -139,45 +140,33 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
           <button className="portfolio-close" onClick={onClose}>Close</button>
         </header>
 
-        <div className="portfolio-layout">
-          <aside className="portfolio-sidebar">
-            <section className="portfolio-hero-card">
-              <span className="portfolio-hero-card__label">Selected destination</span>
-              <h3>{content.title}</h3>
-              <p>{content.intro}</p>
-            </section>
-
+        <div className="portfolio-shell">
+          <section className="portfolio-meta-row">
             {content.stats && (
-              <section className="portfolio-sidebar-block">
-                <div className="portfolio-sidebar-block__title">Snapshot</div>
-                <div className="portfolio-sidebar-metrics">
-                  {content.stats.map((stat) => (
-                    <div key={`${stat.label}-${stat.value}`} className="portfolio-sidebar-metric">
-                      <span>{stat.label}</span>
-                      <strong>{stat.value}</strong>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <section className="portfolio-sidebar-block">
-              <div className="portfolio-sidebar-block__title">Links</div>
-              <div className="portfolio-actions">
-                {content.actions.map((action) => (
-                  <button
-                    key={`${action.label}-${action.href}`}
-                    className={`portfolio-action portfolio-action--${action.variant || 'secondary'}`}
-                    onClick={() => handleAction(action)}
-                  >
-                    {action.label}
-                  </button>
+              <div className="portfolio-summary-list">
+                {content.stats.map((stat) => (
+                  <div key={`${stat.label}-${stat.value}`} className="portfolio-summary-item">
+                    <span>{stat.label}</span>
+                    <strong>{stat.value}</strong>
+                  </div>
                 ))}
               </div>
-            </section>
-          </aside>
+            )}
 
-          <main className="portfolio-main">
+            <div className="portfolio-link-row">
+              {content.actions.map((action) => (
+                <button
+                  key={`${action.label}-${action.href}`}
+                  className="portfolio-link"
+                  onClick={() => handleAction(action)}
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <div className="portfolio-body">
             <nav className="portfolio-tabs" aria-label="Content tabs">
               {content.tabs.map((tab) => (
                 <button
@@ -190,7 +179,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
               ))}
             </nav>
 
-            <div className="portfolio-content">
+            <main className="portfolio-content">
               <section className="portfolio-tab-hero">
                 <span className="portfolio-tab-hero__eyebrow">{content.title}</span>
                 <h3>{activeTab.label}</h3>
@@ -198,8 +187,8 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
               </section>
 
               {activeTab.sections.map((section) => renderSection(section))}
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
     </div>

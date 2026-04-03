@@ -29,7 +29,9 @@ html, body {
 }
 
 /* Allow selection inside content panels */
-.panel-content {
+.panel-content,
+.interior-frame,
+.interior-frame * {
   -webkit-user-select: text;
   user-select: text;
 }
