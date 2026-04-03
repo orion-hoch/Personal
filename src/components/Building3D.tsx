@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect, useMemo, Suspense } from 'react';
+import { useRef, useMemo, Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import type { BuildingDef } from '../engine/types';
-import { buildings } from '../data/mapData';
 import { getBuildingAnchor, gridTo3D, TILE_SPACING } from '../engine/gridUtils';
 
 interface Props {
@@ -12,36 +11,6 @@ interface Props {
   onClick: () => void;
   onHover: (hovered: boolean) => void;
   isHovered: boolean;
-}
-
-const modelAvailabilityCache = new Map<string, boolean>();
-const modelAvailabilityPromiseCache = new Map<string, Promise<boolean>>();
-
-function checkModelAvailability(modelPath: string) {
-  if (modelAvailabilityCache.has(modelPath)) {
-    return Promise.resolve(modelAvailabilityCache.get(modelPath) ?? false);
-  }
-
-  const existingPromise = modelAvailabilityPromiseCache.get(modelPath);
-  if (existingPromise) return existingPromise;
-
-  const request = fetch(modelPath, { method: 'HEAD' })
-    .then((res) => {
-      const ct = res.headers.get('content-type') || '';
-      const available = res.ok && !ct.includes('text/html');
-      modelAvailabilityCache.set(modelPath, available);
-      return available;
-    })
-    .catch(() => {
-      modelAvailabilityCache.set(modelPath, false);
-      return false;
-    })
-    .finally(() => {
-      modelAvailabilityPromiseCache.delete(modelPath);
-    });
-
-  modelAvailabilityPromiseCache.set(modelPath, request);
-  return request;
 }
 
 function normalizeModelNodeName(name: string) {
@@ -64,12 +33,6 @@ function findModelNode(root: THREE.Object3D, targetName: string) {
   return fuzzyMatch;
 }
 
-for (const building of buildings) {
-  if (building.modelFile) {
-    useGLTF.preload(`/models/${building.modelFile}`, false, true);
-  }
-}
-
 /** Try to load a GLB model, fallback to placeholder box */
 function GLBModel({ building, isHovered }: { building: BuildingDef; isHovered: boolean }) {
   // Only load GLB when modelFile is explicitly set — no auto-detection
@@ -78,28 +41,6 @@ function GLBModel({ building, isHovered }: { building: BuildingDef; isHovered: b
   }
 
   const modelPath = `/models/${building.modelFile}`;
-  const [hasModel, setHasModel] = useState<boolean | null>(() => {
-    if (modelAvailabilityCache.has(modelPath)) {
-      return modelAvailabilityCache.get(modelPath) ?? false;
-    }
-
-    return null;
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-
-    checkModelAvailability(modelPath).then((available) => {
-      if (!cancelled) setHasModel(available);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [modelPath]);
-
-  if (hasModel === null) return <PlaceholderBox building={building} isHovered={isHovered} />;
-  if (!hasModel) return <PlaceholderBox building={building} isHovered={isHovered} />;
 
   return (
     <Suspense fallback={<PlaceholderBox building={building} isHovered={isHovered} />}>
@@ -109,7 +50,7 @@ function GLBModel({ building, isHovered }: { building: BuildingDef; isHovered: b
 }
 
 function LoadedModel({ path, building }: { path: string; building: BuildingDef }) {
-  const { scene } = useGLTF(path, false, true);
+  const { scene } = useGLTF(path);
   const cloned = useMemo(() => {
     const c = scene.clone(true);
 

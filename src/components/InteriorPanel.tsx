@@ -21,7 +21,7 @@ function openHref(href: string, external?: boolean) {
 function MediaPlate({ src, label, className = '' }: { src?: string; label: string; className?: string }) {
   return (
     <div className={`media-plate ${className}`.trim()}>
-      {src ? <img src={src} alt={label} className="media-plate__image" loading="lazy" /> : <span className="media-plate__label">{label}</span>}
+      {src ? <img src={src} alt={label} className="media-plate__image" loading="lazy" decoding="async" /> : <span className="media-plate__label">{label}</span>}
     </div>
   );
 }
