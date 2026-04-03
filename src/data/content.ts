@@ -110,19 +110,31 @@ export const interiorContent: Record<string, InteriorContent> = {
         headerImage: '/images/research/tree_no.png',
         items: [
           {
-            title: 'Research Project One',
+            title: 'Lidar Gap Analysis of Post-Hurricane Canopy Disturbance',
             imageLabel: 'Research Image',
             description: 'Use this row for a concise description of the question, method, and resulting artifact or takeaway.',
             skills: ['Research', 'Systems', 'Analysis'],
           },
           {
-            title: 'Research Project Two',
+            title: 'Canopy Gap Driver Analysis with CloudCompare',
             imageLabel: 'Research Image',
             description: 'A second item for another paper, collaboration, or prototype-driven investigation.',
             skills: ['Interaction', 'Prototyping', 'Evaluation'],
           },
           {
-            title: 'Research Project Three',
+            title: 'Lichen Paleoclimate Reconstruction with Mass Spectrometry and Monte Carlo Modeling',
+            imageLabel: 'Research Image',
+            description: 'A third slot for another experiment, publication, or line of inquiry.',
+            skills: ['Writing', 'Experimentation', 'Design'],
+          },
+           {
+            title: 'Regional Climate Modeling with HERBIE',
+            imageLabel: 'Research Image',
+            description: 'A third slot for another experiment, publication, or line of inquiry.',
+            skills: ['Writing', 'Experimentation', 'Design'],
+          },
+          {
+            title: 'Accuracy of Snowpiercer CESM 2.2 Simulations in the Pacific Northwest',
             imageLabel: 'Research Image',
             description: 'A third slot for another experiment, publication, or line of inquiry.',
             skills: ['Writing', 'Experimentation', 'Design'],
@@ -255,16 +267,40 @@ export const interiorContent: Record<string, InteriorContent> = {
         intro: 'A condensed project list with just the essentials: image, name, description, and skills used.',
         items: [
           {
-            title: 'Project Name One',
+            title: 'NBA Computer Vision Shot Quality Quantifier',
             imageLabel: 'Project Image',
             description: 'A short summary of what the project is, why it exists, and what makes it worth showing.',
             skills: ['React', 'TypeScript', 'Design'],
           },
           {
-            title: 'Project Name Two',
+            title: 'OrionTrivia.Org',
             imageLabel: 'Project Image',
             description: 'Another compact row for a side project, tool, prototype, or game-adjacent experiment.',
             skills: ['Three.js', 'UI', 'Motion'],
+          },
+          {
+            title: 'OpenGauntlet',
+            imageLabel: 'Project Image',
+            description: 'A third row for another personal build with a clear one-paragraph explanation.',
+            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+          },
+          {
+            title: 'Buoy Weather Station',
+            imageLabel: 'Project Image',
+            description: 'A third row for another personal build with a clear one-paragraph explanation.',
+            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+          },
+          {
+            title: '3D Personal Website',
+            imageLabel: 'Project Image',
+            description: 'A third row for another personal build with a clear one-paragraph explanation.',
+            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+          },
+          {
+            title: 'Oregon Flood Analysis',
+            imageLabel: 'Project Image',
+            description: 'A third row for another personal build with a clear one-paragraph explanation.',
+            skills: ['Creative Coding', 'Graphics', 'Interaction'],
           },
           {
             title: 'Project Name Three',

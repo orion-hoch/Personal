@@ -14,6 +14,36 @@ interface Props {
   isHovered: boolean;
 }
 
+const modelAvailabilityCache = new Map<string, boolean>();
+const modelAvailabilityPromiseCache = new Map<string, Promise<boolean>>();
+
+function checkModelAvailability(modelPath: string) {
+  if (modelAvailabilityCache.has(modelPath)) {
+    return Promise.resolve(modelAvailabilityCache.get(modelPath) ?? false);
+  }
+
+  const existingPromise = modelAvailabilityPromiseCache.get(modelPath);
+  if (existingPromise) return existingPromise;
+
+  const request = fetch(modelPath, { method: 'HEAD' })
+    .then((res) => {
+      const ct = res.headers.get('content-type') || '';
+      const available = res.ok && !ct.includes('text/html');
+      modelAvailabilityCache.set(modelPath, available);
+      return available;
+    })
+    .catch(() => {
+      modelAvailabilityCache.set(modelPath, false);
+      return false;
+    })
+    .finally(() => {
+      modelAvailabilityPromiseCache.delete(modelPath);
+    });
+
+  modelAvailabilityPromiseCache.set(modelPath, request);
+  return request;
+}
+
 function normalizeModelNodeName(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
@@ -48,15 +78,24 @@ function GLBModel({ building, isHovered }: { building: BuildingDef; isHovered: b
   }
 
   const modelPath = `/models/${building.modelFile}`;
-  const [hasModel, setHasModel] = useState<boolean | null>(null);
+  const [hasModel, setHasModel] = useState<boolean | null>(() => {
+    if (modelAvailabilityCache.has(modelPath)) {
+      return modelAvailabilityCache.get(modelPath) ?? false;
+    }
+
+    return null;
+  });
 
   useEffect(() => {
-    fetch(modelPath, { method: 'HEAD' })
-      .then((res) => {
-        const ct = res.headers.get('content-type') || '';
-        setHasModel(res.ok && !ct.includes('text/html'));
-      })
-      .catch(() => setHasModel(false));
+    let cancelled = false;
+
+    checkModelAvailability(modelPath).then((available) => {
+      if (!cancelled) setHasModel(available);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [modelPath]);
 
   if (hasModel === null) return <PlaceholderBox building={building} isHovered={isHovered} />;

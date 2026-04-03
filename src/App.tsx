@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import WastelandScene from './components/WastelandScene';
 import NeonHeader from './components/NeonHeader';
-import InteriorPanel from './components/InteriorPanel';
 import LoadingScreen from './components/LoadingScreen';
 import type { BuildingDef } from './engine/types';
+
+const InteriorPanel = lazy(() => import('./components/InteriorPanel'));
 
 function App() {
   const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
@@ -29,10 +30,14 @@ function App() {
         onUnfocus={handleUnfocus}
       />
       <NeonHeader />
-      <InteriorPanel
-        buildingId={focusedBuilding?.id ?? null}
-        onClose={handleUnfocus}
-      />
+      <Suspense fallback={null}>
+        {focusedBuilding && (
+          <InteriorPanel
+            buildingId={focusedBuilding.id}
+            onClose={handleUnfocus}
+          />
+        )}
+      </Suspense>
       {/* Help hint */}
       <div style={{
         position: 'fixed',
