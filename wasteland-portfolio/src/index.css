@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+  font-family: 'VT323', 'Courier New', monospace;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Disable text selection globally for game feel */
+* {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow selection inside content panels */
+.panel-content {
+  -webkit-user-select: text;
+  user-select: text;
+}
