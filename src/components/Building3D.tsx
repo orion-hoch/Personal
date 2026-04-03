@@ -66,7 +66,7 @@ function findModelNode(root: THREE.Object3D, targetName: string) {
 
 for (const building of buildings) {
   if (building.modelFile) {
-    useGLTF.preload(`/models/${building.modelFile}`);
+    useGLTF.preload(`/models/${building.modelFile}`, false, true);
   }
 }
 
@@ -109,7 +109,7 @@ function GLBModel({ building, isHovered }: { building: BuildingDef; isHovered: b
 }
 
 function LoadedModel({ path, building }: { path: string; building: BuildingDef }) {
-  const { scene } = useGLTF(path);
+  const { scene } = useGLTF(path, false, true);
   const cloned = useMemo(() => {
     const c = scene.clone(true);
 
