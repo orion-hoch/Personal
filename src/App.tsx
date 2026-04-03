@@ -40,12 +40,16 @@ function App() {
         left: '50%',
         transform: 'translateX(-50%)',
         fontFamily: "'VT323', 'Courier New', monospace",
-        fontSize: 13,
-        color: 'rgba(212, 160, 64, 0.25)',
+        fontSize: 16,
+        color: 'rgba(236, 231, 223, 0.82)',
         letterSpacing: 2,
         pointerEvents: 'none',
         zIndex: 5,
         userSelect: 'none',
+        padding: '6px 12px',
+        background: 'rgba(0, 0, 0, 0.45)',
+        border: '1px solid rgba(86, 101, 93, 0.28)',
+        textShadow: '0 1px 2px rgba(0, 0, 0, 0.75)',
       }}>
         DRAG TO ROTATE • SCROLL TO ZOOM • CLICK LOCATIONS TO EXPLORE
       </div>

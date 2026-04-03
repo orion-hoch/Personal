@@ -1,11 +1,11 @@
 .map-label {
   font-family: 'VT323', 'Courier New', monospace;
-  font-size: 15px;
+  font-size: 19px;
   color: #D4A040;
   text-shadow: 0 0 4px rgba(212, 160, 64, 0.5), 0 0 8px rgba(212, 160, 64, 0.2);
-  letter-spacing: 2.5px;
+  letter-spacing: 3px;
   white-space: nowrap;
-  padding: 4px 10px;
+  padding: 7px 14px;
   background: rgba(0, 0, 0, 0.65);
   border: 1px solid rgba(212, 160, 64, 0.25);
   cursor: pointer;

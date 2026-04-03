@@ -12,6 +12,27 @@ import { gridTo3D, GROUND_SIZE } from '../engine/gridUtils';
 
 const ACTIVE_LIGHT_SOURCES = lightSources.filter((source) => source.intensity >= 0.45);
 
+function LighthouseBeacon() {
+  const [x, , z] = gridTo3D(12.5, 12.5);
+  const fillOffset = 1.8;
+
+  return (
+    <group>
+      <pointLight
+        position={[x, 6.8, z]}
+        color="#F0E2AE"
+        intensity={8.6}
+        distance={15}
+        decay={2}
+      />
+      <pointLight position={[x + fillOffset, 4.2, z]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
+      <pointLight position={[x - fillOffset, 4.2, z]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
+      <pointLight position={[x, 4.2, z + fillOffset]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
+      <pointLight position={[x, 4.2, z - fillOffset]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
+    </group>
+  );
+}
+
 /** Animated point light with flicker */
 function FlickerLight({ col, row, color, intensity }: { col: number; row: number; color: string; intensity: number }) {
   const lightRef = useRef<THREE.PointLight>(null);
@@ -104,7 +125,7 @@ export default function Atmosphere() {
       {/* Directional light — warmer, stronger, as if from the lighthouse */}
       <directionalLight
         position={[10, 15, 10]}
-        intensity={0.34}
+        intensity={0.24}
         color="#F0D890"
         castShadow
         shadow-mapSize-width={512}
@@ -115,6 +136,8 @@ export default function Atmosphere() {
         shadow-camera-top={22}
         shadow-camera-bottom={-22}
       />
+
+      <LighthouseBeacon />
 
       {/* Point lights from lightSources data */}
       {ACTIVE_LIGHT_SOURCES.map((ls, i) => (

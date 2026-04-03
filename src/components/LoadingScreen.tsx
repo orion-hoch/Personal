@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './LoadingScreen.css';
 
-const DISPLAY_MS = 750;
+const DISPLAY_MS = 970;
 const FADE_MS = 180;
 
 export default function LoadingScreen() {
