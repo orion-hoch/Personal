@@ -1,4 +1,5 @@
 import resumePdf from '../../Orion_Hoch_Resume_Climate_Copy.pdf';
+import type { VisualizationSequenceId } from './visualizationSequences';
 
 export interface PortfolioItem {
   title: string;
@@ -33,6 +34,8 @@ export interface ContentTab {
   actionLabel?: string;
   actionHref?: string;
   actionExternal?: boolean;
+  visualizationSequenceId?: VisualizationSequenceId;
+  visualizationLabel?: string;
   photo?: string;
   photoLabel?: string;
   alternatePhoto?: string;
@@ -106,6 +109,8 @@ export const interiorContent: Record<string, InteriorContent> = {
         label: 'Research',
         layout: 'list',
         intro: 'A header image area followed by a restrained list of research work, papers, or investigations.',
+        visualizationSequenceId: 'research',
+        visualizationLabel: 'Open 3D Walkthrough',
         headerImageLabel: 'Research Header Image',
         headerImage: '/images/research/tree_no.png',
         items: [
@@ -265,6 +270,8 @@ export const interiorContent: Record<string, InteriorContent> = {
         label: 'Projects',
         layout: 'list',
         intro: 'A condensed project list with just the essentials: image, name, description, and skills used.',
+        visualizationSequenceId: 'projects',
+        visualizationLabel: 'Open 3D Walkthrough',
         items: [
           {
             title: 'NBA Computer Vision Shot Quality Quantifier',

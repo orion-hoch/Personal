@@ -228,6 +228,13 @@
   gap: 1rem;
 }
 
+.portfolio-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: start;
+}
+
 .portfolio-panel__intro,
 .profile-layout__bio p,
 .portfolio-row__body p,
@@ -505,6 +512,10 @@
 
   .portfolio-panel__topline {
     flex-direction: column;
+  }
+
+  .portfolio-panel__actions {
+    width: 100%;
   }
 
   .profile-layout,

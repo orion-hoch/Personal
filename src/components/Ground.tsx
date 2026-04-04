@@ -46,11 +46,7 @@ export default function Ground() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
       <planeGeometry args={[GROUND_SIZE, GROUND_SIZE]} />
-      <meshStandardMaterial
-        map={texture}
-        roughness={0.95}
-        metalness={0.05}
-      />
+      <meshLambertMaterial map={texture} />
     </mesh>
   );
 }

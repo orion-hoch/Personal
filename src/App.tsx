@@ -3,12 +3,14 @@ import WastelandScene from './components/WastelandScene';
 import NeonHeader from './components/NeonHeader';
 import LoadingScreen from './components/LoadingScreen';
 import type { BuildingDef } from './engine/types';
+import type { VisualizationSequenceId } from './data/visualizationSequences';
 
 const InteriorPanel = lazy(() => import('./components/InteriorPanel'));
+const VisualizationSequence = lazy(() => import('./components/visualization/VisualizationSequence'));
 
 function App() {
-  const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
   const [focusedBuilding, setFocusedBuilding] = useState<BuildingDef | null>(null);
+  const [activeVisualization, setActiveVisualization] = useState<VisualizationSequenceId | null>(null);
 
   const handleBuildingClick = useCallback((b: BuildingDef) => {
     if (b.decorative) return;
@@ -23,8 +25,6 @@ function App() {
     <>
       <LoadingScreen />
       <WastelandScene
-        hoveredBuilding={hoveredBuilding}
-        onHoverChange={setHoveredBuilding}
         focusedBuilding={focusedBuilding}
         onBuildingClick={handleBuildingClick}
         onUnfocus={handleUnfocus}
@@ -35,6 +35,13 @@ function App() {
           <InteriorPanel
             buildingId={focusedBuilding.id}
             onClose={handleUnfocus}
+            onOpenVisualization={setActiveVisualization}
+          />
+        )}
+        {activeVisualization && (
+          <VisualizationSequence
+            sequenceId={activeVisualization}
+            onClose={() => setActiveVisualization(null)}
           />
         )}
       </Suspense>

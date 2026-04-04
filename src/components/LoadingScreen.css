@@ -6,7 +6,7 @@
   place-items: center;
   background: #000;
   opacity: 1;
-  transition: opacity 0.18s ease;
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
@@ -14,18 +14,223 @@
   opacity: 0;
 }
 
+.loading-screen__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 460px;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.loading-screen__title {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: #D4A040;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(212, 160, 64, 0.4);
+}
+
+.loading-screen__subtitle {
+  color: #7a7570;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+}
+
+/* ─── Chunky 90s loading bar ─── */
+
+.loading-bar {
+  width: 260px;
+  margin: 8px 0 4px;
+  /* Outer bevel — raised edge look */
+  padding: 3px;
+  background: #3A3530;
+  border: 1px solid #1A1816;
+  box-shadow:
+    inset 1px 1px 0 #4A4540,
+    inset -1px -1px 0 #1A1610,
+    0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.loading-bar__inset {
+  position: relative;
+  height: 20px;
+  /* Sunken inner track — dark recessed look */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #0A0806 0px,
+      #0A0806 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    #0E0C0A;
+  border: 1px solid #0A0806;
+  box-shadow:
+    inset 1px 1px 2px rgba(0, 0, 0, 0.8),
+    inset -1px -1px 0 #1E1A16;
+  overflow: hidden;
+}
+
+.loading-bar__track {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  padding: 0 1px;
+  gap: 1px;
+}
+
+/* Individual sand/rubble chunks */
+.loading-bar__chunk {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  animation: chunk-appear 0.12s steps(3) forwards;
+  /* Grainy texture via gradient noise */
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  image-rendering: pixelated;
+  /* Top edge of each chunk: uneven sand surface */
+  border-top: 1px solid rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Darker pebble/rubble accent on top of some chunks */
+.loading-bar__pebble {
+  position: absolute;
+  top: 0;
+  left: 25%;
+  width: 50%;
+  height: 3px;
+  display: block;
+  opacity: 0.7;
+}
+
+/* Crack overlays — jagged lines across the bar */
+.loading-bar__crack {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.loading-bar__crack--1 {
+  /* Diagonal crack from upper-left area */
+  background:
+    linear-gradient(
+      125deg,
+      transparent 18%,
+      #0A0806 18.3%,
+      #0A0806 18.6%,
+      transparent 18.9%,
+      transparent 42%,
+      #0A0806 42.2%,
+      #0A0806 42.5%,
+      transparent 42.8%
+    );
+  opacity: 0.5;
+  animation: crack-flicker 4s ease-in-out infinite alternate;
+}
+
+.loading-bar__crack--2 {
+  /* Horizontal crack with offset */
+  background:
+    linear-gradient(
+      172deg,
+      transparent 55%,
+      #1A1610 55.3%,
+      #1A1610 55.7%,
+      transparent 56%,
+      transparent 78%,
+      #0A0806 78.2%,
+      #0A0806 78.5%,
+      transparent 78.8%
+    );
+  opacity: 0.4;
+}
+
+@keyframes chunk-appear {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  33% {
+    opacity: 0.6;
+    transform: scaleY(0.5);
+  }
+  66% {
+    opacity: 0.85;
+    transform: scaleY(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes crack-flicker {
+  0%, 85% { opacity: 0.5; }
+  90% { opacity: 0.2; }
+  95% { opacity: 0.6; }
+  100% { opacity: 0.5; }
+}
+
+/* ─── Text below bar ─── */
+
+.loading-screen__tip {
+  color: #5A5550;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+}
+
 .loading-screen__label {
-  color: #d6d8d2;
-  font-size: 1.3rem;
+  color: #9a9590;
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 0.88rem;
   letter-spacing: 0.14rem;
   text-transform: uppercase;
+  animation: loading-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 @media (max-width: 640px) {
+  .loading-screen__title {
+    font-size: 1.3rem;
+  }
+
+  .loading-bar {
+    width: 200px;
+  }
+
   .loading-screen__label {
-    font-size: 1rem;
+    font-size: 0.8rem;
     letter-spacing: 0.1rem;
-    text-align: center;
-    padding: 0 1rem;
   }
 }

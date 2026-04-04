@@ -1,0 +1,467 @@
+================================================================================
+  WASTELAND PORTFOLIO — ELEMENT DICTIONARY
+  A reference for naming every important part of the site.
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+  1. 3D SCENE (the main Canvas)
+────────────────────────────────────────────────────────────────────────────────
+
+Canvas / Renderer
+  File: src/components/WastelandScene.tsx
+  The R3F <Canvas> element that hosts the entire 3D scene.
+  Settings: DPR [1, 1.25], antialias off, PCFShadowMap, high-performance GPU.
+
+Ground Plane
+  File: src/components/Ground.tsx
+  A flat mesh on the XZ plane textured with a procedural pixel-art tile map.
+  Uses MeshLambertMaterial. Tile resolution: 64px per tile, 25x25 grid = 1600px.
+  Texture uses NearestFilter for the crunchy pixel look.
+
+Tile System
+  File: src/engine/tiles.ts
+  Procedural tile generator producing 128x64 isometric pixel-art tiles.
+  Tile types: ground, ground_dead_grass, ground_scorched, road_ns, road_ew,
+    road_cross, rubble, rubble2, puddle, void_edge, void_edge_crumble.
+  Color palette defined in the PAL object (muted earth tones).
+  Tiles are cached in a Map after first generation.
+
+Grid System
+  File: src/engine/gridUtils.ts
+  Converts 2D grid coordinates to 3D world positions.
+  Constants: TILE_SPACING = 2, GROUND_SIZE = MAP_SIZE * TILE_SPACING = 50.
+  Functions: gridTo3D(), getBuildingAnchor().
+
+────────────────────────────────────────────────────────────────────────────────
+  2. BUILDINGS
+��───────────────────────────────────────────────────────────────────────────────
+
+  All buildings defined in: src/data/mapData.ts
+  Rendered by: src/components/Building3D.tsx
+  Type definition: src/engine/types.ts (BuildingDef)
+
+  Each building has:
+  - Grid position (gridCol, gridRow) — footprint on the tile map
+  - Anchor position (anchorCol, anchorRow) — visual 3D placement override
+  - boxSize [w, h, d] — placeholder dimensions
+  - focusOffset [x, y, z] — camera offset when focused
+  - modelFile — GLB model filename in public/models/
+  - modelNodeName — optional node to extract from the GLB
+
+  ┌──────────────────┬──────────┬────────────────────┬──────────────────────────┐
+  │ Building ID      │ Type     │ Label              │ Model File               │
+  ├──────────────────┼──────────┼────────────────────┼──────────────────────────┤
+  │ lighthouse       │lighthouse│ THE LIGHTHOUSE     │ lighthouse.glb (638KB)   │
+  │ about            │ camp     │ ABOUT ME           │ camp.glb (2.8MB)         │
+  │ projects         │power_plant│RESEARCH           │ power_plant.glb (3.8MB)  │
+  │ contact          │radiotower│ CONTACT & LINKS    │ radiotower.glb (1.1MB)   │
+  │ resume           │ bunker   │ EXPERIENCES        │ bunker.glb (3.5MB)       │
+  │ games            │ferriswheel│PERSONAL PROJECTS  │ ferriswheel.glb (4.4MB)  │
+  └──────────────────┴──────────┴────────────────────┴──────────────────────────┘
+
+  Lighthouse — center landmark (decorative, not clickable)
+    Grid position: (11, 11), 3x3 footprint
+    Anchor: grid center (12.5, 12.5)
+
+  Camp (About Me) — southwest of lighthouse
+    Anchor: (6.41, 10.52), interactive
+    Content: profile, bio, skill groups
+
+  Power Plant (Research) — north of lighthouse
+    Anchor: (12.5, 6.1), interactive
+    Content: research papers, 3D walkthrough
+
+  Radio Tower (Contact) — northeast of lighthouse
+    Anchor: (18.59, 10.52), interactive, uses modelNodeName "Mesh1.001"
+    Content: email, GitHub, LinkedIn, location
+
+  Bunker (Experiences) — south of lighthouse
+    Anchor: (8.74, 17.68), interactive
+    Content: work experience, resume download
+
+  Ferris Wheel (Personal Projects) — southeast of lighthouse
+    Anchor: (16.26, 17.68), interactive, uses modelNodeName "Mesh_0"
+    Content: personal projects, 3D walkthrough
+
+Building Interaction
+  File: src/components/Building3D.tsx
+  - Hover: building floats up 0.15 units, selection ring appears
+  - Click: opens InteriorPanel, camera zooms to building
+  - Selection Ring: gold ring on ground, 24 segments, MeshBasicMaterial
+
+Placeholder Boxes
+  File: src/components/Building3D.tsx (PlaceholderBox function)
+  Fallback geometry shown when GLB models haven't loaded yet.
+  Type-specific shapes: lighthouse=cylinder, ferriswheel=torus+spokes,
+  radiotower=lattice, others=box with windows.
+
+Building Labels
+  File: src/components/BuildingLabel.tsx + BuildingLabel.css
+  HTML overlays positioned above each interactive building via drei <Html>.
+  Uses CSS class "map-label". Hidden when another building is focused.
+
+────────────────────────────────────────────────────────────────────────────────
+  3. ATMOSPHERE & LIGHTING
+────────────────────────────────────────────────────────────────────────────────
+
+  All defined in: src/components/Atmosphere.tsx
+
+Hemisphere Light
+  args: sky #C8A882, ground #2A2520, intensity 0.35
+  Adds warm sky / cool ground gradient for depth and fill.
+
+Ambient Light
+  intensity: 0.45, color: #9999AA
+  Provides uniform base illumination.
+
+Directional Light (Key)
+  position: [10, 15, 10], intensity: 0.45, color: #F0D890
+  Shadow map: 512x512, frozen after first 4 frames (FreezeStaticShadows).
+
+Directional Light (Fill)
+  position: [-8, 10, -6], intensity: 0.18, color: #8899BB
+  Cool-toned fill from opposite side to add dimension.
+
+Lighthouse Beacon (LighthouseBeacon component)
+  4 point lights at the lighthouse center:
+  - Main beacon: y=6.8, #F0E2AE, intensity 12, distance 20
+  - 3 cross-fill lights: y=4.2, #DCCB9A, intensity 4, distance 11 (spread +-1.8)
+
+Flicker Lights (FlickerLight component)
+  Animated point lights at building/street positions.
+  Filter: only lights with intensity >= 0.5 from lightSources array.
+  Each has a random phase for independent flicker via sin waves.
+  matrixAutoUpdate disabled.
+
+Light Sources Data
+  File: src/data/mapData.ts (lightSources array)
+  13 total light definitions:
+  - 2 lighthouse lights (intensity 1.3, 0.72)
+  - 6 building lights (camp, power plant, radio tower, bunker ×2, ferris wheel)
+  - 5 street lamps (lower intensity 0.3-0.35, filtered out by threshold)
+
+Ash Particles (AshParticles component)
+  70 point sprites falling with drift. Respawn at y=12-17 when hitting ground.
+  Uses pointsMaterial, size 0.04, color #B0A898, opacity 0.4.
+
+Ember Sparkles
+  drei <Sparkles> placed near the 2 brightest light sources.
+  count: 3 per source, scale 2.5, speed 0.2.
+
+Fog
+  Linear fog: color #000000, near 25, far 55.
+  Fades the scene edges to black.
+
+Post-Processing (EffectComposer)
+  - Bloom: threshold 0.65, smoothing 0.2, intensity 0.3, mipmapBlur enabled
+  - Vignette: offset 0.25, darkness 0.9
+
+FreezeStaticShadows (helper component)
+  Disables shadow map auto-update after 4 frames since the scene is static.
+
+────────────────────────────────────────────────────────────────────────────────
+  4. CAMERA
+────────────────────────────────────────────────────────────────────────────────
+
+Camera Rig
+  File: src/components/CameraRig.tsx
+  Default position: [20, 18, 20], FOV 45, near 0.1, far 100.
+  Uses drei OrbitControls:
+  - enablePan: false
+  - enableDamping: true (factor 0.05)
+  - minDistance: 8, maxDistance: 45
+  - polar angle: PI/6 to PI/2.2
+
+Focus Animation
+  When a building is clicked, camera lerps to building's focusOffset position.
+  Speed: 0.04 (focus in), 0.12 (return to orbit).
+  OrbitControls disabled during focus.
+  ESC key returns camera to saved orbit state.
+
+────────────────────────────────────────────────────────────────────────────────
+  5. UI OVERLAYS (HTML/CSS)
+────────────────────────────────────────────────────────────────────────────────
+
+Neon Header
+  File: src/components/NeonHeader.tsx + NeonHeader.css
+  Fixed header at top: "Welcome to Orion's Wasteland"
+  - Each letter is a <span> with color class: warm, accent, hot
+  - Some letters have "neon-flicker" class for random flicker via JS intervals
+  - One letter has "dead" class (burned-out appearance)
+  - Metal brackets on sides, support wires from top
+  - Font: VT323 monospace
+  - z-index: 20, pointer-events: none
+
+Help Hint Bar
+  File: src/App.tsx (inline styles)
+  Fixed at bottom center: "DRAG TO ROTATE • SCROLL TO ZOOM • CLICK LOCATIONS TO EXPLORE"
+  Font: VT323, 16px, semi-transparent background, z-index 5.
+
+Loading Screen
+  File: src/components/LoadingScreen.tsx + LoadingScreen.css
+  Full-screen black overlay shown for ~3.2 seconds on load.
+  Contains: title ("Welcome to Orion's Wasteland"), subtitle, animated progress bar,
+  random navigation tip, and "Loading 3D Models ..." label.
+  Fades out over 400ms. z-index: 30.
+
+────────────────────────────────────────────────────────────────────────────────
+  6. INTERIOR PANELS (content overlays)
+────────────────────────────────────────────────────────────────────────────────
+
+Interior Panel
+  File: src/components/InteriorPanel.tsx + InteriorPanel.css
+  Full-screen modal overlay with backdrop blur.
+  Opened when a building is clicked. ESC or backdrop click closes it.
+  z-index: 100.
+
+Panel Frame
+  CSS class: .interior-frame
+  Clip-path polygon with angled corners (sci-fi aesthetic).
+  Decorative trim (.interior-frame__trim) and metal plates.
+  Max width: 1120px, centered.
+
+Panel Header
+  CSS class: .portfolio-header
+  Contains: kicker text (building type), h2 title, close button.
+
+Panel Body
+  CSS class: .portfolio-body
+  Single-column layout (.portfolio-main--single).
+
+Tab Layouts
+  Defined in: src/data/content.ts (ContentTab interface)
+  Three layout types:
+  - "about": profile photo with toggle, bio text, skill groups grid
+  - "list": header image, portfolio rows with media plates
+  - "contacts": contact card grid
+
+Portfolio Row
+  CSS class: .portfolio-row
+  Grid: 170px media plate + flexible body.
+  Contains: title, organization link, dates, description, skill chips.
+
+Skill Chip
+  CSS class: .portfolio-chip
+  Inline tag showing a skill/technology name.
+
+Media Plate
+  CSS class: .media-plate
+  Image container with dark background and subtle noise pattern.
+  Uses lazy loading and async decoding.
+
+Contact Card
+  CSS class: .contact-card
+  Label + value pair for contact information.
+
+Photo Toggle (About panel)
+  Component: AboutPhotoToggle
+  Toggles between headshot and casual photo with a scan-line transition effect.
+
+────────────────────────────────────────────────────────────────────────────────
+  7. VISUALIZATION SEQUENCES (3D walkthroughs)
+────────────────────────────────────────────────────────────────────────────────
+
+  Files: src/components/visualization/VisualizationSequence.tsx
+         src/components/visualization/SceneAsset.tsx
+         src/data/visualizationSequences.ts
+
+Visualization Overlay
+  CSS class: .visualization-overlay
+  Full-screen takeover with its own Canvas instance.
+  Separate from the main wasteland Canvas.
+
+Sequences
+  Two defined: "research" and "projects"
+  Each has: id, title, intro, accent color, and an array of steps.
+
+Steps
+  Each step has: id, title, subtitle, description, asset, tags, links, detail.
+  Steps are arranged on a track with 18-unit spacing.
+
+Scene Assets
+  Component: SceneAsset (src/components/visualization/SceneAsset.tsx)
+  Two kinds:
+  - "glb": loaded GLB model (reuses models from public/models/)
+  - "shape": procedural geometry with preset shapes
+
+  Procedural Shapes:
+    terminal, monolith, archive, dish, frame, capsule, stack,
+    sensorRig, weatherTower, buoy, scoreboard, mapTable
+
+Step Camera
+  Component: StepCamera
+  Follows active step position with mouse-parallax.
+  Camera lerp speed: 3.8 (moving) or 6 (settled).
+
+HUD Panel
+  CSS class: .visualization-hud
+  Shows step title, subtitle, description, tags, links.
+
+Navigation
+  CSS class: .visualization-nav
+  Prev/next buttons. Keyboard: Arrow keys or W/S.
+  Hold to auto-repeat (540ms interval).
+
+Detail Popup
+  Component: DetailPopup
+  CSS class: .visualization-detail
+  Modal with image, purpose, goals, results sections.
+
+────────────────────────────────────────────────────────────────────────────────
+  8. CONTENT DATA
+────────────────────────────────────────────────────────────────────────────────
+
+Building Content
+  File: src/data/content.ts
+  Record<string, InteriorContent> keyed by building ID.
+  Each entry has: title, kicker, accent color, tabs array.
+
+  about:    "About Me"           — accent #66747b — camp kicker
+  projects: "Research"           — accent #738088 — power plant kicker
+  contact:  "Contact"            — accent #6b7880 — radio tower kicker
+  resume:   "Experience"         — accent #616d74 — bunker kicker
+  games:    "Personal Projects"  — accent #7a8790 — ferris wheel kicker
+
+Building Map
+  File: src/data/mapData.ts
+  MAP_SIZE: 25 (25x25 grid)
+  Road network: cross pattern at columns/rows 8, 12, 16
+  Tile distribution: 8% puddle, 12% rubble, 10% rubble2, 20% dead grass,
+    10% scorched, 40% plain ground
+
+────────────────────────────────────────────────────────────────────────────────
+  9. MODELS & ASSETS
+────────────────────────────────────────────────────────────────────────────────
+
+GLB Models (public/models/)
+  All compressed with meshopt + WebP textures.
+  ┌──────────────────┬──────────┐
+  │ File             │ Size     │
+  ├──────────────────┼──────────┤
+  │ lighthouse.glb   │ 638 KB   │
+  │ radiotower.glb   │ 1.1 MB   │
+  │ camp.glb         │ 2.8 MB   │
+  │ bunker.glb       │ 3.5 MB   │
+  │ power_plant.glb  │ 3.8 MB   │
+  │ ferriswheel.glb  │ 4.4 MB   │
+  ├──────────────────┼──────────┤
+  │ TOTAL            │ ~16.3 MB │
+  └──────────────────┴──────────┘
+  Loaded via useGLTF with meshopt decoding.
+  Re-compress: npx @gltf-transform/cli optimize input.glb output.glb \
+    --compress meshopt --simplify false --texture-compress webp --texture-size 2048
+
+Images (public/images/)
+  Organized by section: about/, experience/, research/
+  Loaded lazily in InteriorPanel via <img loading="lazy">.
+
+Resume PDF
+  Imported directly in content.ts from project root.
+
+────────────────────────────────────────────────────────────────────────────────
+  10. COLOR PALETTE & THEMING
+────────────────────────────────────────────────────────────────────────────────
+
+Tile Palette (PAL object in tiles.ts)
+  Dirt:     #6B5B4F, #5A4A3E, #635347, #7D6D5F, #8A7A6C
+  Asphalt:  #3A3A3E, #333338, #2A2A2E, #5A5A40, #424248
+  Grass:    #4A5A3A, #3A4A2A, #5A5840, #4E4830
+  Scorched: #2E2A26, #1E1A16, #3E3630
+  Rubble:   #5A5550, #6A6560, #4A4540, #7A7570, #6A6560
+  Puddle:   #3A5A5A, #2A4A4A, #4A6A5A, #4A5A50
+
+Neon Sign Colors
+  Warm (Welcome to):  #D4A040 — amber
+  Accent (Orion's):   #E08040 — orange
+  Hot (Wasteland):    #D06030 — red-orange
+  Dead letter:        #3A2A20 — dark brown
+  Dim letter:         #8A6A30 — muted amber
+
+Panel Theming (CSS variables in InteriorPanel.css)
+  --panel-accent:   per-building accent color
+  --panel-line:     #2b3338
+  --panel-bg:       #090b0d
+  --panel-raised:   #12161a
+  --panel-raised-2: #171c20
+  --panel-copy:     #d9ddd8
+  --panel-muted:    #9aa2a6
+
+Scene Background: #000000
+Fog Color: #000000
+Ambient Light: #9999AA
+
+────────────────────────────────────────────────────────────────────────────────
+  11. PERFORMANCE SETTINGS (current optimized values)
+────────────────────────────────────────────────────────────────────────────────
+
+Renderer
+  DPR: [1, 1.25] (was [1, 1.5])
+  Antialias: OFF (was ON) — Bloom provides sufficient edge smoothing
+  Shadow Map: PCFShadowMap (was PCFSoftShadowMap, deprecated)
+  Power Preference: high-performance
+
+Shadows
+  Shadow map size: 512x512
+  Auto-update: FROZEN after 4 frames (FreezeStaticShadows component)
+  No objects currently cast shadows (all model meshes: castShadow=false)
+
+Materials
+  All GLB model materials: MeshLambertMaterial (was MeshStandardMaterial)
+  Ground plane: MeshLambertMaterial (was MeshStandardMaterial)
+  Placeholder buildings: MeshLambertMaterial (was MeshStandardMaterial)
+  Selection ring: MeshBasicMaterial (cheapest, no lighting needed)
+
+Matrix Updates
+  matrixAutoUpdate=false on: internal GLB model children (meshes + groups)
+  whose transforms are baked from the GLB file.
+  NOT set on: root objects with R3F JSX position/rotation/scale props,
+  ground plane, lights — R3F needs auto-update to apply declarative transforms.
+
+Particles
+  Ash count: 70 (was 120)
+  Sparkles sources: 2 (was 3), 3 particles each (was 4)
+
+Lights
+  Lighthouse beacon: 4 lights (was 5) — 1 main + 3 cross-fill
+  Active flicker lights: intensity threshold >= 0.45 (same as original)
+  Flicker base multiplier: 11x (was 9.5x) — brighter overall
+  Hemisphere light: added (new) for sky/ground gradient fill
+  Ambient light: 0.45 (was 0.32) — significantly brighter
+  Key directional: 0.45 (was 0.24) — nearly doubled
+  Fill directional: added (new) — cool #8899BB from opposite side
+  Bloom threshold: 0.6 (was 0.65) — catches more glow
+  Bloom intensity: 0.35 (was 0.3)
+  Vignette darkness: 0.85 (was 0.9) — slightly less edge darkening
+  Fog range: 28-58 (was 25-55) — pushed out for more visible scene
+  Selection ring segments: 24 (was 48)
+
+Post-Processing
+  Bloom: mipmapBlur enabled for better performance
+  Vignette: unchanged
+
+────────────────────────────────────────────────────────────────────────────────
+  12. KEY FILES QUICK REFERENCE
+────────────────────────────────────────────────────────────────────────────────
+
+  src/App.tsx                              — Root component, state, lazy imports
+  src/components/WastelandScene.tsx        — Canvas + scene composition
+  src/components/Atmosphere.tsx            — Lights, particles, fog, post-FX
+  src/components/Building3D.tsx            — GLB models, hover, selection ring
+  src/components/BuildingLabel.tsx         — HTML labels above buildings
+  src/components/CameraRig.tsx             — OrbitControls, focus animation
+  src/components/Ground.tsx                — Procedural ground texture
+  src/components/LoadingScreen.tsx         — Loading overlay with tips
+  src/components/NeonHeader.tsx            — Flickering neon sign header
+  src/components/InteriorPanel.tsx         — Content modal overlay
+  src/components/InteriorPanel.css         — Panel styling
+  src/components/visualization/            — 3D walkthrough system
+  src/data/mapData.ts                      — Building defs, lights, tile map
+  src/data/content.ts                      — Panel content for each building
+  src/data/visualizationSequences.ts       — Walkthrough step definitions
+  src/engine/types.ts                      — BuildingDef type
+  src/engine/gridUtils.ts                  — Grid-to-3D coordinate conversion
+  src/engine/tiles.ts                      — Procedural tile renderer + palette
+  public/models/                           — GLB 3D model files
+  public/images/                           — Static images by section
+
+================================================================================

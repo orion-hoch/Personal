@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -17,7 +17,7 @@ export default function CameraRig({ focusedBuilding, onUnfocus }: Props) {
   const animating = useRef(false);
   const targetPos = useRef(new THREE.Vector3());
   const targetLookAt = useRef(new THREE.Vector3());
-  const orbitTarget = useRef(new THREE.Vector3(0, 0, 0));
+  const orbitTarget = useMemo(() => new THREE.Vector3(0, 0, 0), []);
 
   // Save orbit state before focusing
   const savedOrbitPos = useRef(new THREE.Vector3());
@@ -65,28 +65,25 @@ export default function CameraRig({ focusedBuilding, onUnfocus }: Props) {
     }
   }, [focusedBuilding, camera]);
 
-  // Smooth camera animation
+  // Smooth camera animation — skip when idle
   useFrame(() => {
-    if (animating.current) {
-      const speed = focusedBuilding ? 0.04 : 0.12;
-      camera.position.lerp(targetPos.current, speed);
+    if (!animating.current) return;
 
-      // Lerp the look-at target
+    const speed = focusedBuilding ? 0.04 : 0.12;
+    camera.position.lerp(targetPos.current, speed);
+
+    if (controlsRef.current) {
+      controlsRef.current.target.lerp(targetLookAt.current, speed);
+    }
+
+    const dist = camera.position.distanceTo(targetPos.current);
+    if (dist < 0.05) {
+      animating.current = false;
+      camera.position.copy(targetPos.current);
       if (controlsRef.current) {
-        controlsRef.current.target.lerp(targetLookAt.current, speed);
-      }
-
-      // Check if close enough to stop animating
-      const dist = camera.position.distanceTo(targetPos.current);
-      if (dist < 0.05) {
-        animating.current = false;
-        camera.position.copy(targetPos.current);
-        if (controlsRef.current) {
-          controlsRef.current.target.copy(targetLookAt.current);
-          // Re-enable controls only when returning to orbit
-          if (!focusedBuilding) {
-            controlsRef.current.enabled = true;
-          }
+        controlsRef.current.target.copy(targetLookAt.current);
+        if (!focusedBuilding) {
+          controlsRef.current.enabled = true;
         }
       }
     }
@@ -102,7 +99,7 @@ export default function CameraRig({ focusedBuilding, onUnfocus }: Props) {
       maxDistance={45}
       maxPolarAngle={Math.PI / 2.2}
       minPolarAngle={Math.PI / 6}
-      target={orbitTarget.current}
+      target={orbitTarget}
     />
   );
 }

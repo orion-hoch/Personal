@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Sparkles } from '@react-three/drei';
 import {
   EffectComposer,
@@ -10,7 +10,30 @@ import * as THREE from 'three';
 import { lightSources } from '../data/mapData';
 import { gridTo3D, GROUND_SIZE } from '../engine/gridUtils';
 
+// Keep all lights with real contribution — threshold lowered for richer scene
 const ACTIVE_LIGHT_SOURCES = lightSources.filter((source) => source.intensity >= 0.45);
+
+function pseudoRandom(seed: number) {
+  const n = Math.sin(seed * 127.1) * 43758.5453;
+  return n - Math.floor(n);
+}
+
+/** Freezes shadow map updates after initial render since nothing moves */
+function FreezeStaticShadows() {
+  const { gl } = useThree();
+  const frameCount = useRef(0);
+
+  useFrame(() => {
+    if (frameCount.current < 4) {
+      frameCount.current++;
+      if (frameCount.current === 4) {
+        gl.shadowMap.autoUpdate = false;
+      }
+    }
+  });
+
+  return null;
+}
 
 function LighthouseBeacon() {
   const [x, , z] = gridTo3D(12.5, 12.5);
@@ -18,17 +41,18 @@ function LighthouseBeacon() {
 
   return (
     <group>
+      {/* Main beacon */}
       <pointLight
         position={[x, 6.8, z]}
         color="#F0E2AE"
-        intensity={8.6}
-        distance={15}
+        intensity={12}
+        distance={20}
         decay={2}
       />
-      <pointLight position={[x + fillOffset, 4.2, z]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
-      <pointLight position={[x - fillOffset, 4.2, z]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
-      <pointLight position={[x, 4.2, z + fillOffset]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
-      <pointLight position={[x, 4.2, z - fillOffset]} color="#DCCB9A" intensity={3.1} distance={9} decay={2} />
+      {/* Cross-fill lights for even spread around the lighthouse */}
+      <pointLight position={[x + fillOffset, 4.2, z]} color="#DCCB9A" intensity={4} distance={11} decay={2} />
+      <pointLight position={[x - fillOffset, 4.2, z]} color="#DCCB9A" intensity={4} distance={11} decay={2} />
+      <pointLight position={[x, 4.2, z + fillOffset]} color="#DCCB9A" intensity={4} distance={11} decay={2} />
     </group>
   );
 }
@@ -37,17 +61,17 @@ function LighthouseBeacon() {
 function FlickerLight({ col, row, color, intensity }: { col: number; row: number; color: string; intensity: number }) {
   const lightRef = useRef<THREE.PointLight>(null);
   const [x, , z] = gridTo3D(col, row);
-  const phase = useMemo(() => Math.random() * Math.PI * 2, []);
+  const phase = useMemo(() => pseudoRandom(col * 100 + row) * Math.PI * 2, [col, row]);
+  const baseIntensity = useMemo(() => intensity * 11, [intensity]);
 
   useFrame(({ clock }) => {
     if (lightRef.current) {
       const t = clock.getElapsedTime();
       const flicker = Math.sin(t * 3 + phase) * 0.15 + Math.sin(t * 7.3 + phase * 2) * 0.08;
-      lightRef.current.intensity = (intensity * 9.5) + flicker * 3.2;
+      lightRef.current.intensity = baseIntensity + flicker * 3.5;
     }
   });
 
-  // Larger radius lights get placed higher and reach further
   const isLarge = intensity > 0.8;
 
   return (
@@ -55,8 +79,8 @@ function FlickerLight({ col, row, color, intensity }: { col: number; row: number
       ref={lightRef}
       position={[x, isLarge ? 6 : 1.5, z]}
       color={color}
-      intensity={intensity * 9.5}
-      distance={isLarge ? 30 : 10}
+      intensity={baseIntensity}
+      distance={isLarge ? 32 : 12}
       decay={2}
     />
   );
@@ -64,13 +88,14 @@ function FlickerLight({ col, row, color, intensity }: { col: number; row: number
 
 /** Ash particles falling across the scene */
 function AshParticles() {
-  const count = 120;
+  const count = 70;
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * GROUND_SIZE;
-      arr[i * 3 + 1] = Math.random() * 15;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * GROUND_SIZE;
+      const seed = i + 1;
+      arr[i * 3] = (pseudoRandom(seed * 3) - 0.5) * GROUND_SIZE;
+      arr[i * 3 + 1] = pseudoRandom(seed * 5) * 15;
+      arr[i * 3 + 2] = (pseudoRandom(seed * 7) - 0.5) * GROUND_SIZE;
     }
     return arr;
   }, []);
@@ -81,17 +106,17 @@ function AshParticles() {
     if (!ref.current) return;
     const posArray = (ref.current.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
     const t = clock.getDelta();
+    const elapsed = clock.getElapsedTime();
     for (let i = 0; i < count; i++) {
-      // Drift down and sideways
-      posArray[i * 3] += Math.sin(clock.getElapsedTime() + i) * 0.003;
+      posArray[i * 3] += Math.sin(elapsed + i) * 0.003;
       posArray[i * 3 + 1] -= t * 0.5;
-      posArray[i * 3 + 2] += Math.cos(clock.getElapsedTime() + i * 0.7) * 0.002;
+      posArray[i * 3 + 2] += Math.cos(elapsed + i * 0.7) * 0.002;
 
-      // Reset if below ground
       if (posArray[i * 3 + 1] < 0) {
-        posArray[i * 3] = (Math.random() - 0.5) * GROUND_SIZE;
-        posArray[i * 3 + 1] = 12 + Math.random() * 5;
-        posArray[i * 3 + 2] = (Math.random() - 0.5) * GROUND_SIZE;
+        const seed = i + Math.floor(elapsed * 10) + 1;
+        posArray[i * 3] = (pseudoRandom(seed * 11) - 0.5) * GROUND_SIZE;
+        posArray[i * 3 + 1] = 12 + pseudoRandom(seed * 13) * 5;
+        posArray[i * 3 + 2] = (pseudoRandom(seed * 17) - 0.5) * GROUND_SIZE;
       }
     }
     ref.current.geometry.attributes.position.needsUpdate = true;
@@ -117,15 +142,25 @@ function AshParticles() {
 }
 
 export default function Atmosphere() {
+  const sparklesSources = useMemo(() => ACTIVE_LIGHT_SOURCES.slice(0, 3), []);
+
   return (
     <>
-      {/* Ambient light — brighter for a more lit town feel */}
-      <ambientLight intensity={0.32} color="#9999AA" />
+      <FreezeStaticShadows />
 
-      {/* Directional light — warmer, stronger, as if from the lighthouse */}
+      {/* Hemisphere light — warm sky / cool ground for subtle fill */}
+      <hemisphereLight
+        args={['#C8A882', '#2A2520', 0.22]}
+        position={[0, 20, 0]}
+      />
+
+      {/* Ambient light — low for moodier feel */}
+      <ambientLight intensity={0.3} color="#888899" />
+
+      {/* Directional light — warm key light, restrained */}
       <directionalLight
         position={[10, 15, 10]}
-        intensity={0.24}
+        intensity={0.32}
         color="#F0D890"
         castShadow
         shadow-mapSize-width={512}
@@ -137,6 +172,13 @@ export default function Atmosphere() {
         shadow-camera-bottom={-22}
       />
 
+      {/* Secondary directional — faint cool fill */}
+      <directionalLight
+        position={[-8, 10, -6]}
+        intensity={0.1}
+        color="#7788AA"
+      />
+
       <LighthouseBeacon />
 
       {/* Point lights from lightSources data */}
@@ -145,7 +187,7 @@ export default function Atmosphere() {
       ))}
 
       {/* Ember sparkles near light sources */}
-      {ACTIVE_LIGHT_SOURCES.slice(0, 3).map((ls, i) => {
+      {sparklesSources.map((ls, i) => {
         const [x, , z] = gridTo3D(ls.col, ls.row);
         return (
           <Sparkles
@@ -163,20 +205,21 @@ export default function Atmosphere() {
       {/* Ash particles */}
       <AshParticles />
 
-      {/* Fog for void-edge darkness — pushed further out since town is brighter */}
-      <fog attach="fog" args={['#000000', 25, 55]} />
+      {/* Fog — tighter for moodier darkness at edges */}
+      <fog attach="fog" args={['#000000', 24, 52]} />
 
       {/* Post-processing */}
       <EffectComposer>
         <Bloom
-          luminanceThreshold={0.65}
+          luminanceThreshold={0.6}
           luminanceSmoothing={0.2}
-          intensity={0.3}
+          intensity={0.32}
+          mipmapBlur
         />
         <Vignette
           eskil={false}
-          offset={0.25}
-          darkness={0.9}
+          offset={0.22}
+          darkness={0.92}
         />
       </EffectComposer>
     </>

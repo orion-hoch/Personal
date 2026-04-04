@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import * as THREE from 'three';
 import Ground from './Ground';
 import Building3D from './Building3D';
 import BuildingLabel from './BuildingLabel';
@@ -8,23 +9,19 @@ import { buildings } from '../data/mapData';
 import type { BuildingDef } from '../engine/types';
 
 interface Props {
-  hoveredBuilding: string | null;
-  onHoverChange: (id: string | null) => void;
   focusedBuilding: BuildingDef | null;
   onBuildingClick: (b: BuildingDef) => void;
   onUnfocus: () => void;
 }
 
 export default function WastelandScene({
-  hoveredBuilding,
-  onHoverChange,
   focusedBuilding,
   onBuildingClick,
   onUnfocus,
 }: Props) {
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      dpr={[1, 1.25]}
       camera={{ position: [20, 18, 20], fov: 45, near: 0.1, far: 100 }}
       style={{
         position: 'fixed',
@@ -34,8 +31,8 @@ export default function WastelandScene({
         height: '100%',
         background: '#000000',
       }}
-      gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-      shadows
+      gl={{ antialias: false, alpha: false, powerPreference: 'high-performance' }}
+      shadows={{ type: THREE.PCFShadowMap }}
     >
       <color attach="background" args={['#000000']} />
 
@@ -48,8 +45,6 @@ export default function WastelandScene({
           key={b.id}
           building={b}
           onClick={() => onBuildingClick(b)}
-          onHover={(h) => onHoverChange(h ? b.id : null)}
-          isHovered={hoveredBuilding === b.id}
         />
       ))}
 
@@ -57,7 +52,6 @@ export default function WastelandScene({
         <BuildingLabel
           key={`label-${b.id}`}
           building={b}
-          isHovered={hoveredBuilding === b.id}
           visible={!focusedBuilding || focusedBuilding.id === b.id}
           onClick={() => onBuildingClick(b)}
         />

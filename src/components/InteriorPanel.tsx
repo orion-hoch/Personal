@@ -2,11 +2,13 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { interiorContent } from '../data/content';
 import type { ContactItem, ContentTab, PortfolioItem, SkillGroup } from '../data/content';
+import type { VisualizationSequenceId } from '../data/visualizationSequences';
 import './InteriorPanel.css';
 
 interface Props {
   buildingId: string | null;
   onClose: () => void;
+  onOpenVisualization?: (sequenceId: VisualizationSequenceId) => void;
 }
 
 function openHref(href: string, external?: boolean) {
@@ -148,7 +150,7 @@ function SkillGroupCard({ group }: { group: SkillGroup }) {
   );
 }
 
-function renderTab(tab: ContentTab) {
+function renderTab(tab: ContentTab, onOpenVisualization?: (sequenceId: VisualizationSequenceId) => void) {
   if (tab.layout === 'about') {
     return (
       <section className="portfolio-panel portfolio-panel--about">
@@ -190,17 +192,27 @@ function renderTab(tab: ContentTab) {
   return (
     <section className="portfolio-panel">
       {tab.headerImageLabel && <MediaPlate src={tab.headerImage} label={tab.headerImageLabel} className="portfolio-header-image" />}
-      {(tab.intro || tab.actionHref) && (
+      {(tab.intro || tab.actionHref || tab.visualizationSequenceId) && (
         <div className="portfolio-panel__topline">
           {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
-          {tab.actionHref && (
-            <button
-              className="portfolio-action-button"
-              onClick={() => openHref(tab.actionHref!, tab.actionExternal)}
-            >
-              {tab.actionLabel || 'Open'}
-            </button>
-          )}
+          <div className="portfolio-panel__actions">
+            {tab.visualizationSequenceId && onOpenVisualization && (
+              <button
+                className="portfolio-action-button"
+                onClick={() => onOpenVisualization(tab.visualizationSequenceId!)}
+              >
+                {tab.visualizationLabel || 'Open 3D Walkthrough'}
+              </button>
+            )}
+            {tab.actionHref && (
+              <button
+                className="portfolio-action-button"
+                onClick={() => openHref(tab.actionHref!, tab.actionExternal)}
+              >
+                {tab.actionLabel || 'Open'}
+              </button>
+            )}
+          </div>
         </div>
       )}
       <div className="portfolio-list">
@@ -222,17 +234,9 @@ function renderTab(tab: ContentTab) {
   );
 }
 
-export default function InteriorPanel({ buildingId, onClose }: Props) {
-  const [visible, setVisible] = useState(false);
+export default function InteriorPanel({ buildingId, onClose, onOpenVisualization }: Props) {
   const content = buildingId ? interiorContent[buildingId] : null;
-
-  useEffect(() => {
-    if (buildingId && content) {
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
-  }, [buildingId, content]);
+  const visible = Boolean(buildingId && content);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -271,7 +275,7 @@ export default function InteriorPanel({ buildingId, onClose }: Props) {
 
         <div className="portfolio-body">
           <main className="portfolio-main portfolio-main--single">
-            {renderTab(activeTab)}
+            {renderTab(activeTab, onOpenVisualization)}
           </main>
         </div>
       </div>

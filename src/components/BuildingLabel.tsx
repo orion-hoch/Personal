@@ -5,12 +5,11 @@ import './BuildingLabel.css';
 
 interface Props {
   building: BuildingDef;
-  isHovered: boolean;
   visible: boolean;
   onClick: () => void;
 }
 
-export default function BuildingLabel({ building, isHovered, visible, onClick }: Props) {
+export default function BuildingLabel({ building, visible, onClick }: Props) {
   const [centerCol, centerRow] = getBuildingAnchor(building);
   const [x, , z] = gridTo3D(centerCol, centerRow);
   const labelY = building.boxSize[1] + 1.5;
@@ -26,7 +25,7 @@ export default function BuildingLabel({ building, isHovered, visible, onClick }:
       style={{ pointerEvents: 'auto' }}
     >
       <div
-        className={`map-label ${isHovered ? 'hovered' : ''}`}
+        className="map-label"
         onClick={(e) => { e.stopPropagation(); onClick(); }}
       >
         {building.label}
