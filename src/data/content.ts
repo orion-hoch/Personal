@@ -113,7 +113,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         visualizationSequenceId: 'projects',
         visualizationLabel: 'Personal Walkthrough',
         headerImageLabel: 'Projects Header Image',
-        headerImage: '/inspiration/Xpbl_e6.png',
+        headerImage: '/images/ui/panel-texture.png',
         items: [
           {
             title: 'Lidar Gap Analysis of Post-Hurricane Canopy Disturbance',
@@ -197,7 +197,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         layout: 'list',
         intro: 'list of research, internship, and team leadership experience.',
         headerImageLabel: 'Experience Header Image',
-        headerImage: '/inspiration/vBrFyWe.jpg',
+        headerImage: '/images/ui/vBrFyWe.jpg',
         actionLabel: 'Download Resume',
         actionHref: resumePdf,
         items: [
@@ -301,7 +301,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         visualizationSequenceId: 'creative',
         visualizationLabel: 'Personal Walkthrough',
         headerImageLabel: 'Creative Work Header Image',
-        headerImage: '/inspiration/DnUZLdw.jpg',
+        headerImage: '/images/ui/Terminal.webp',
         items: [
           {
             title: 'NFL/NBA Balatro',
