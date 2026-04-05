@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './LoadingScreen.css';
 
-const DISPLAY_MS = 3200;
+const DISPLAY_MS = 1600;
 const FADE_MS = 400;
 
 const TIPS = [
@@ -26,15 +26,11 @@ function generateChunks() {
   const rand = seededRand(42);
   return Array.from({ length: CHUNK_COUNT }, (_, i) => {
     const r = rand();
-    // Each chunk gets a slightly different height, color, and delay
     return {
       delay: (i / CHUNK_COUNT) * 2.4 + rand() * 0.18,
       heightPct: 55 + rand() * 45,
-      // Cycle through dirt/rubble palette
       color: ['#6B5B4F', '#5A4A3E', '#7D6D5F', '#4A4540', '#635347', '#8A7A6C'][i % 6],
-      // Some chunks are slightly offset to look like uneven sand
       offsetY: Math.floor(rand() * 3),
-      // Occasional darker "pebble" accent on top
       hasPebble: r > 0.6,
       pebbleColor: r > 0.8 ? '#3E3630' : '#4A4540',
     };
@@ -45,7 +41,7 @@ export default function LoadingScreen() {
   const [ending, setEnding] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [tipIndex] = useState(() => Math.floor(Math.random() * TIPS.length));
-  const chunks = useMemo(generateChunks, []);
+  const chunks = useMemo(() => generateChunks(), []);
 
   useEffect(() => {
     const fadeTimer = window.setTimeout(() => setEnding(true), DISPLAY_MS);
@@ -61,7 +57,12 @@ export default function LoadingScreen() {
   return (
     <div className={`loading-screen ${ending ? 'ending' : ''}`} aria-hidden>
       <div className="loading-screen__content">
-        <div className="loading-screen__title">Welcome to Orion's Wasteland</div>
+        <img
+          className="loading-screen__sign"
+          src="/images/loading-sign.png"
+          alt=""
+          draggable={false}
+        />
         <div className="loading-screen__subtitle">
           An interactive 3D portfolio built in the ruins
         </div>

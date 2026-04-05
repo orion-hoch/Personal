@@ -80,7 +80,7 @@
 
 .neon-text {
   font-family: 'VT323', 'Courier New', monospace;
-  font-size: clamp(22px, 4vw, 42px);
+  font-size: clamp(16px, 2.8vw, 28px);
   font-weight: 400;
   margin: 0;
   padding: 8px 16px;
@@ -160,7 +160,7 @@
 /* Responsive */
 @media (max-width: 600px) {
   .neon-text {
-    font-size: 18px;
+    font-size: 14px;
     padding: 6px 10px;
   }
 

@@ -1,16 +1,25 @@
-import { lazy, Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import WastelandScene from './components/WastelandScene';
 import NeonHeader from './components/NeonHeader';
 import LoadingScreen from './components/LoadingScreen';
+import WalkthroughLoadingScreen from './components/WalkthroughLoadingScreen';
 import type { BuildingDef } from './engine/types';
 import type { VisualizationSequenceId } from './data/visualizationSequences';
 
 const InteriorPanel = lazy(() => import('./components/InteriorPanel'));
 const VisualizationSequence = lazy(() => import('./components/visualization/VisualizationSequence'));
 
+interface ActiveVisualization {
+  sequenceId: VisualizationSequenceId;
+  stepId?: string;
+}
+
 function App() {
   const [focusedBuilding, setFocusedBuilding] = useState<BuildingDef | null>(null);
-  const [activeVisualization, setActiveVisualization] = useState<VisualizationSequenceId | null>(null);
+  const [activeVisualization, setActiveVisualization] = useState<ActiveVisualization | null>(null);
+  const [walkthroughLoading, setWalkthroughLoading] = useState(false);
+  const launchTimerRef = useRef<number | null>(null);
+  const settleTimerRef = useRef<number | null>(null);
 
   const handleBuildingClick = useCallback((b: BuildingDef) => {
     if (b.decorative) return;
@@ -19,6 +28,26 @@ function App() {
 
   const handleUnfocus = useCallback(() => {
     setFocusedBuilding(null);
+  }, []);
+
+  const handleOpenVisualization = useCallback((sequenceId: VisualizationSequenceId, stepId?: string) => {
+    if (launchTimerRef.current) window.clearTimeout(launchTimerRef.current);
+    if (settleTimerRef.current) window.clearTimeout(settleTimerRef.current);
+
+    setWalkthroughLoading(true);
+    launchTimerRef.current = window.setTimeout(() => {
+      setActiveVisualization({ sequenceId, stepId });
+    }, 220);
+    settleTimerRef.current = window.setTimeout(() => {
+      setWalkthroughLoading(false);
+    }, 480);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (launchTimerRef.current) window.clearTimeout(launchTimerRef.current);
+      if (settleTimerRef.current) window.clearTimeout(settleTimerRef.current);
+    };
   }, []);
 
   return (
@@ -33,18 +62,24 @@ function App() {
       <Suspense fallback={null}>
         {focusedBuilding && (
           <InteriorPanel
+            key={focusedBuilding.id}
             buildingId={focusedBuilding.id}
             onClose={handleUnfocus}
-            onOpenVisualization={setActiveVisualization}
+            onOpenVisualization={handleOpenVisualization}
           />
         )}
+      </Suspense>
+      <Suspense fallback={<WalkthroughLoadingScreen />}> 
         {activeVisualization && (
           <VisualizationSequence
-            sequenceId={activeVisualization}
+            key={`${activeVisualization.sequenceId}:${activeVisualization.stepId ?? 'start'}`}
+            sequenceId={activeVisualization.sequenceId}
+            initialStepId={activeVisualization.stepId}
             onClose={() => setActiveVisualization(null)}
           />
         )}
       </Suspense>
+      {walkthroughLoading && <WalkthroughLoadingScreen />}
       {/* Help hint */}
       <div style={{
         position: 'fixed',

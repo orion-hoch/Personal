@@ -1,0 +1,24 @@
+.walkthrough-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.96);
+  pointer-events: none;
+}
+
+.walkthrough-loading__panel {
+  border: 2px solid #A7111B;
+  background: #070707;
+  padding: 0.85rem 1.1rem;
+  box-shadow: 0 0 28px rgba(0, 0, 0, 0.45);
+}
+
+.walkthrough-loading__label {
+  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  color: #d8c8ca;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+}

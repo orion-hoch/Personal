@@ -9,6 +9,7 @@ import './VisualizationSequence.css';
 
 interface Props {
   sequenceId: VisualizationSequenceId;
+  initialStepId?: string;
   onClose: () => void;
 }
 
@@ -168,9 +169,10 @@ function DetailPopup({ title, detail, onClose }: { title: string; detail: Visual
   );
 }
 
-export default function VisualizationSequence({ sequenceId, onClose }: Props) {
+export default function VisualizationSequence({ sequenceId, initialStepId, onClose }: Props) {
   const sequence = visualizationSequences[sequenceId];
-  const [stepIndex, setStepIndex] = useState(0);
+  const initialIndex = Math.max(0, sequence.steps.findIndex((step) => step.id === initialStepId));
+  const [stepIndex, setStepIndex] = useState(initialIndex);
   const [moving, setMoving] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const moveTimerRef = useRef<number | null>(null);

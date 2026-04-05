@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import Ground from './Ground';
 import Building3D from './Building3D';
@@ -6,7 +7,9 @@ import BuildingLabel from './BuildingLabel';
 import CameraRig from './CameraRig';
 import Atmosphere from './Atmosphere';
 import { buildings } from '../data/mapData';
+import { getBuildingAnchor, gridTo3D } from '../engine/gridUtils';
 import type { BuildingDef } from '../engine/types';
+import './BuildingLabel.css';
 
 interface Props {
   focusedBuilding: BuildingDef | null;
@@ -19,10 +22,12 @@ export default function WastelandScene({
   onBuildingClick,
   onUnfocus,
 }: Props) {
+  const lighthouse = buildings.find((building) => building.id === 'lighthouse');
+
   return (
     <Canvas
       dpr={[1, 1.25]}
-      camera={{ position: [20, 18, 20], fov: 45, near: 0.1, far: 100 }}
+      camera={{ position: [0, 10.5, 28], fov: 45, near: 0.1, far: 100 }}
       style={{
         position: 'fixed',
         top: 0,
@@ -56,6 +61,26 @@ export default function WastelandScene({
           onClick={() => onBuildingClick(b)}
         />
       ))}
+
+      {lighthouse && !focusedBuilding && <LighthouseIntro building={lighthouse} />}
     </Canvas>
+  );
+}
+
+function LighthouseIntro({ building }: { building: BuildingDef }) {
+  const [centerCol, centerRow] = getBuildingAnchor(building);
+  const [x, , z] = gridTo3D(centerCol, centerRow);
+
+  return (
+    <Html
+      position={[x + 3.5, building.boxSize[1] * 0.55, z + 0.5]}
+      distanceFactor={12}
+      occlude={false}
+      style={{ pointerEvents: 'none' }}
+    >
+      <div className="map-label map-label--intro map-label--speech">
+        Welcome to my Personal Website! This is the central hub with links to everything in my portfolio.
+      </div>
+    </Html>
   );
 }

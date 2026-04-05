@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
 import { interiorContent } from '../data/content';
 import type { ContactItem, ContentTab, PortfolioItem, SkillGroup } from '../data/content';
 import type { VisualizationSequenceId } from '../data/visualizationSequences';
@@ -8,8 +7,10 @@ import './InteriorPanel.css';
 interface Props {
   buildingId: string | null;
   onClose: () => void;
-  onOpenVisualization?: (sequenceId: VisualizationSequenceId) => void;
+  onOpenVisualization?: (sequenceId: VisualizationSequenceId, stepId?: string) => void;
 }
+
+const SECTION_ORDER = ['about', 'resume', 'projects', 'games', 'contact'] as const;
 
 function openHref(href: string, external?: boolean) {
   if (external || href.startsWith('http') || href.startsWith('mailto:')) {
@@ -20,23 +21,36 @@ function openHref(href: string, external?: boolean) {
   window.location.href = href;
 }
 
-function MediaPlate({ src, label, className = '' }: { src?: string; label: string; className?: string }) {
+function MediaBox({ src, label, className = '', onClick }: { src?: string; label: string; className?: string; onClick?: () => void }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   return (
-    <div className={`media-plate ${className}`.trim()}>
-      {src ? <img src={src} alt={label} className="media-plate__image" loading="lazy" decoding="async" /> : <span className="media-plate__label">{label}</span>}
-    </div>
+    <button className={`neo-media ${onClick ? 'neo-media--button' : ''} ${className}`.trim()} onClick={onClick}>
+      {src && !imageFailed ? (
+        <img
+          src={src}
+          alt={label}
+          className="neo-media__img"
+          loading="lazy"
+          decoding="async"
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <span className="neo-media__label">{label}</span>
+      )}
+    </button>
   );
 }
 
-function AboutPhotoToggle({ tab }: { tab: ContentTab }) {
+function AboutPhotoSwitcher({ tab }: { tab: ContentTab }) {
   const hasAlternate = Boolean(tab.alternatePhoto);
   const [showAlternate, setShowAlternate] = useState(false);
-  const [transitioning, setTransitioning] = useState(false);
+  const [switching, setSwitching] = useState(false);
   const swapTimerRef = useRef<number | null>(null);
   const settleTimerRef = useRef<number | null>(null);
 
   const currentPhoto = showAlternate && tab.alternatePhoto ? tab.alternatePhoto : tab.photo;
-  const currentLabel = showAlternate && tab.alternatePhotoLabel ? tab.alternatePhotoLabel : (tab.photoLabel || 'Portrait');
+  const currentLabel = showAlternate && tab.alternatePhotoLabel ? tab.alternatePhotoLabel : (tab.photoLabel || 'portrait');
 
   useEffect(() => {
     return () => {
@@ -46,238 +60,247 @@ function AboutPhotoToggle({ tab }: { tab: ContentTab }) {
   }, []);
 
   const handleToggle = () => {
-    if (transitioning) return;
+    if (!hasAlternate || switching) return;
 
-    setTransitioning(true);
-
+    setSwitching(true);
     if (swapTimerRef.current) window.clearTimeout(swapTimerRef.current);
     if (settleTimerRef.current) window.clearTimeout(settleTimerRef.current);
 
     swapTimerRef.current = window.setTimeout(() => {
       setShowAlternate((value) => !value);
-    }, 140);
+    }, 120);
 
     settleTimerRef.current = window.setTimeout(() => {
-      setTransitioning(false);
+      setSwitching(false);
     }, 420);
   };
 
   return (
-    <div className="profile-layout__photo-wrap">
-      <MediaPlate src={currentPhoto} label={currentLabel} className={`profile-layout__photo ${transitioning ? 'profile-layout__photo--transitioning' : ''}`} />
+    <div className="neo-photo-switcher">
+      <MediaBox src={currentPhoto} label={currentLabel} className={`neo-photo ${switching ? 'neo-photo--switching' : ''}`} />
       {hasAlternate && (
-        <button
-          className="portfolio-action-button profile-layout__photo-toggle"
-          onClick={handleToggle}
-        >
+        <button className="neo-text-link" onClick={handleToggle}>
           {showAlternate
-            ? (tab.primaryPhotoButtonLabel || 'Show Headshot')
-            : (tab.alternatePhotoButtonLabel || 'Show Casual Photo')}
+            ? (tab.primaryPhotoButtonLabel || 'show headshot')
+            : (tab.alternatePhotoButtonLabel || 'show casual photo')}
         </button>
       )}
     </div>
   );
 }
 
-function PortfolioRow({ item }: { item: PortfolioItem }) {
+function PortfolioEntry({ item, onOpenVisualization }: { item: PortfolioItem; onOpenVisualization?: () => void }) {
   return (
-    <article className="portfolio-row">
-      <MediaPlate src={item.image} label={item.imageLabel} className="portfolio-row__media" />
-      <div className="portfolio-row__body">
-        <div className="portfolio-row__header">
-          <div className="portfolio-row__header-main">
-            <h4>{item.title}</h4>
+    <article className="neo-entry">
+      <MediaBox src={item.image} label={item.imageLabel} className="neo-entry__media" onClick={onOpenVisualization} />
+      <div className="neo-entry__body">
+        <div className="neo-entry__title">{item.title}</div>
+        {(item.organization || item.dates) && (
+          <div className="neo-entry__meta">
             {item.organization && (
               item.organizationHref ? (
-                <button
-                  className="portfolio-row__organization portfolio-row__organization--link"
-                  onClick={() => openHref(item.organizationHref!, item.organizationExternal)}
-                >
+                <button className="neo-text-link neo-text-link--inline" onClick={() => openHref(item.organizationHref!, item.organizationExternal)}>
                   {item.organization}
                 </button>
               ) : (
-                <div className="portfolio-row__organization">{item.organization}</div>
+                <span>{item.organization}</span>
               )
             )}
+            {item.dates && <span>{item.dates}</span>}
           </div>
-          {(item.dates || item.href) && (
-            <div className="portfolio-row__header-side">
-              {item.dates && <div className="portfolio-row__dates">{item.dates}</div>}
-              {item.href && (
-                <button className="portfolio-inline-link" onClick={() => openHref(item.href!, item.external)}>
-                  Open
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-        <p>{item.description}</p>
-        <div className="portfolio-row__skills">
-          {item.skills.map((skill) => (
-            <span key={skill} className="portfolio-chip">{skill}</span>
-          ))}
-        </div>
+        )}
+        <p className="neo-copy neo-copy--compact">{item.description}</p>
+        {item.skills.length > 0 && (
+          <div className="neo-tag-row">
+            {item.skills.map((skill) => <span key={skill} className="neo-tag">{skill}</span>)}
+          </div>
+        )}
+        {item.href && (
+          <button className="neo-text-link" onClick={() => openHref(item.href!, item.external)}>
+            open transmission
+          </button>
+        )}
       </div>
     </article>
   );
 }
 
-function ContactRow({ item }: { item: ContactItem }) {
+function ContactSignal({ item }: { item: ContactItem }) {
   return (
-    <article className="contact-card">
-      <span className="contact-card__label">{item.label}</span>
+    <div className="neo-signal-row">
+      <span className="neo-signal-row__label">{item.label}</span>
       {item.href ? (
-        <button className="portfolio-inline-link" onClick={() => openHref(item.href!)}>
-          {item.value}
-        </button>
+        <button className="neo-text-link neo-text-link--inline" onClick={() => openHref(item.href!)}>{item.value}</button>
       ) : (
-        <span className="contact-card__value">{item.value}</span>
+        <span className="neo-copy neo-copy--compact">{item.value}</span>
       )}
-    </article>
+    </div>
   );
 }
 
-function SkillGroupCard({ group }: { group: SkillGroup }) {
+function SkillBlock({ group }: { group: SkillGroup }) {
   return (
-    <article className="skill-group-card">
-      <div className="skill-group-card__title">{group.title}</div>
-      <div className="skill-group-card__list">
-        {group.items.map((item) => (
-          <span key={item} className="portfolio-chip">{item}</span>
-        ))}
+    <section className="neo-skill-block">
+      <div className="neo-minihead">{group.title}</div>
+      <div className="neo-tag-row">
+        {group.items.map((item) => <span key={item} className="neo-tag">{item}</span>)}
       </div>
-    </article>
+    </section>
   );
 }
 
-function renderTab(tab: ContentTab, onOpenVisualization?: (sequenceId: VisualizationSequenceId) => void) {
+function renderPage(
+  sectionId: string,
+  tab: ContentTab,
+  onOpenVisualization?: (sequenceId: VisualizationSequenceId, stepId?: string) => void,
+) {
   if (tab.layout === 'about') {
     return (
-      <section className="portfolio-panel portfolio-panel--about">
-        <div className="profile-layout">
-          <AboutPhotoToggle tab={tab} />
-          <section className="profile-layout__intro">
-            {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
-            <div className="profile-layout__bio">
-              {tab.bio?.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-          </section>
-        </div>
+      <>
+        <section className="neo-feature">
+          <AboutPhotoSwitcher tab={tab} />
+          <div className="neo-feature__body">
+            {tab.intro && <div className="neo-status">{tab.intro}</div>}
+            {tab.bio?.map((paragraph) => <p key={paragraph} className="neo-copy">{paragraph}</p>)}
+          </div>
+        </section>
 
-        {tab.skillGroups && (
-          <section className="skills-section">
-            <div className="section-tag">Resume Skills</div>
-            <div className="skills-grid">
-              {tab.skillGroups.map((group) => <SkillGroupCard key={group.title} group={group} />)}
+        {tab.skillGroups && tab.skillGroups.length > 0 && (
+          <>
+            <div className="neo-divider">resume skills</div>
+            <div className="neo-skill-grid">
+              {tab.skillGroups.map((group) => <SkillBlock key={group.title} group={group} />)}
             </div>
-          </section>
+          </>
         )}
-      </section>
+      </>
     );
   }
 
   if (tab.layout === 'contacts') {
     return (
-      <section className="portfolio-panel">
-        {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
-        <div className="contact-grid">
-          {tab.contacts?.map((item) => <ContactRow key={`${item.label}-${item.value}`} item={item} />)}
+      <>
+        {tab.headerImage && <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" />}
+        {tab.intro && <div className="neo-status">{tab.intro}</div>}
+        <div className="neo-divider">entries</div>
+        <div className="neo-signal-board">
+          {tab.contacts?.map((item) => <ContactSignal key={`${item.label}-${item.value}`} item={item} />)}
         </div>
-      </section>
+      </>
     );
   }
 
   return (
-    <section className="portfolio-panel">
-      {tab.headerImageLabel && <MediaPlate src={tab.headerImage} label={tab.headerImageLabel} className="portfolio-header-image" />}
-      {(tab.intro || tab.actionHref || tab.visualizationSequenceId) && (
-        <div className="portfolio-panel__topline">
-          {tab.intro && <p className="portfolio-panel__intro">{tab.intro}</p>}
-          <div className="portfolio-panel__actions">
-            {tab.visualizationSequenceId && onOpenVisualization && (
-              <button
-                className="portfolio-action-button"
-                onClick={() => onOpenVisualization(tab.visualizationSequenceId!)}
-              >
-                {tab.visualizationLabel || 'Open 3D Walkthrough'}
+    <>
+      {tab.headerImage && <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" />}
+      {tab.intro && <div className="neo-status">{tab.intro}</div>}
+
+      {(tab.visualizationSequenceId || tab.actionHref) && (
+        <div className="neo-action-row">
+          {tab.visualizationSequenceId && onOpenVisualization && (
+            <div className="neo-walkthrough-callout">
+              <button className="neo-walkthrough-link" onClick={() => onOpenVisualization(tab.visualizationSequenceId!)}>
+                {tab.visualizationLabel || 'open personal walkthrough'}
               </button>
-            )}
-            {tab.actionHref && (
-              <button
-                className="portfolio-action-button"
-                onClick={() => openHref(tab.actionHref!, tab.actionExternal)}
-              >
-                {tab.actionLabel || 'Open'}
-              </button>
-            )}
-          </div>
+              <p className="neo-copy neo-copy--compact">A guided 3D route through these projects with staged props, camera beats, and detail popups.</p>
+            </div>
+          )}
+          {tab.actionHref && (
+            <button className="neo-action-button" onClick={() => openHref(tab.actionHref!, tab.actionExternal)}>
+              {tab.actionLabel || 'open'}
+            </button>
+          )}
         </div>
       )}
-      <div className="portfolio-list">
-        {tab.items?.map((item) => <PortfolioRow key={item.title} item={item} />)}
+
+      <div className="neo-divider">entries</div>
+      <div className="neo-entry-list">
+        {tab.items?.map((item) => (
+          <PortfolioEntry
+            key={`${sectionId}-${item.title}`}
+            item={item}
+            onOpenVisualization={tab.visualizationSequenceId && item.visualizationStepId && onOpenVisualization
+              ? () => onOpenVisualization(tab.visualizationSequenceId!, item.visualizationStepId)
+              : undefined}
+          />
+        ))}
       </div>
+
       {tab.secondaryItems && tab.secondaryItems.length > 0 && (
         <>
-          <div className="portfolio-section-divider" aria-hidden />
-          <section className="portfolio-subsection">
-            {tab.secondaryTitle && <div className="section-tag">{tab.secondaryTitle}</div>}
-            {tab.secondaryIntro && <p className="portfolio-panel__intro">{tab.secondaryIntro}</p>}
-            <div className="portfolio-list">
-              {tab.secondaryItems.map((item) => <PortfolioRow key={item.title} item={item} />)}
-            </div>
-          </section>
+          <div className="neo-divider">{tab.secondaryTitle || 'additional work'}</div>
+          {tab.secondaryIntro && <div className="neo-status">{tab.secondaryIntro}</div>}
+          <div className="neo-entry-list">
+            {tab.secondaryItems.map((item) => <PortfolioEntry key={`${sectionId}-${item.title}`} item={item} />)}
+          </div>
         </>
       )}
-    </section>
+    </>
   );
 }
 
 export default function InteriorPanel({ buildingId, onClose, onOpenVisualization }: Props) {
-  const content = buildingId ? interiorContent[buildingId] : null;
-  const visible = Boolean(buildingId && content);
+  const [currentSectionId, setCurrentSectionId] = useState(buildingId ?? 'about');
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
     };
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  const activeTab = useMemo(() => content?.tabs[0], [content]);
+  const currentContent = interiorContent[currentSectionId] ?? (buildingId ? interiorContent[buildingId] : null);
+  const activeTab = useMemo(() => currentContent?.tabs[0], [currentContent]);
 
-  if (!content || !activeTab) return null;
-
-  const accentStyle = { '--panel-accent': content.accent } as CSSProperties;
+  if (!buildingId || !currentContent || !activeTab) return null;
 
   return (
-    <div
-      className={`interior-backdrop ${visible ? 'open' : ''}`}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className={`interior-frame ${visible ? 'open' : ''}`} style={accentStyle}>
-        <div className="interior-frame__trim" aria-hidden />
-        <div className="interior-frame__plate interior-frame__plate--top" aria-hidden />
-        <div className="interior-frame__plate interior-frame__plate--right" aria-hidden />
+    <div className="neo-backdrop" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <div className="neo-blackbox">
+        <div className="neo-overlay neo-overlay--noise" />
+        <div className="neo-overlay neo-overlay--vignette" />
 
-        <header className="portfolio-header">
-          <div className="portfolio-header__copy">
-            <div className="portfolio-header__kicker">{content.kicker}</div>
-            <h2>{content.title}</h2>
-          </div>
-          <button className="portfolio-close" onClick={onClose}>Close</button>
+        <header className="neo-header">
+          <div className="neo-header__title">{currentContent.title}</div>
+          <div className="neo-header__sub">cataloging Orion's junk since 2005</div>
+          <button className="neo-close" onClick={onClose}>return to hub</button>
         </header>
 
-        <div className="portfolio-body">
-          <main className="portfolio-main portfolio-main--single">
-            {renderTab(activeTab, onOpenVisualization)}
+        <div className="neo-layout">
+          <aside className="neo-sidebar neo-sidebar--left">
+            <div className="neo-sidebox">
+              <div className="neo-radio-track">currently viewing / {currentContent.title.toLowerCase()}</div>
+            </div>
+
+            <div className="neo-sidebox">
+              <div className="neo-sidebar__label">navigate</div>
+              <nav className="neo-nav">
+                {SECTION_ORDER.map((sectionId) => (
+                  <button
+                    key={sectionId}
+                    className={`neo-nav__item ${sectionId === currentSectionId ? 'active' : ''}`}
+                    onClick={() => setCurrentSectionId(sectionId)}
+                  >
+                    {interiorContent[sectionId].title.toLowerCase()}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            <div className="neo-sidebox">
+              <div className="neo-sidebar__label">status</div>
+              <div className="neo-smallcopy">updated 20260404</div>
+            </div>
+          </aside>
+
+          <main className="neo-main">
+            {renderPage(currentSectionId, activeTab, onOpenVisualization)}
           </main>
         </div>
+
+        <footer className="neo-footer">page © wasteland.terminal — still transmitting — est. 2024</footer>
       </div>
     </div>
   );

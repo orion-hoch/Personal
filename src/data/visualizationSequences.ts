@@ -1,4 +1,4 @@
-export type VisualizationSequenceId = 'research' | 'projects';
+export type VisualizationSequenceId = 'projects' | 'creative';
 
 export type VisualizationShape =
   | 'terminal'
@@ -61,35 +61,35 @@ export interface VisualizationSequenceDef {
 }
 
 const sharedAssets = {
-  researchIntro: { kind: 'glb', modelFile: 'power_plant.glb', targetSize: 9 } satisfies VisualizationAssetDef,
-  projectIntro: { kind: 'glb', modelFile: 'ferriswheel.glb', modelNodeName: 'Mesh_0', targetSize: 9 } satisfies VisualizationAssetDef,
+  projectsIntro: { kind: 'glb', modelFile: 'power_plant.glb', targetSize: 9 } satisfies VisualizationAssetDef,
+  creativeIntro: { kind: 'glb', modelFile: 'ferriswheel.glb', modelNodeName: 'Mesh_0', targetSize: 9 } satisfies VisualizationAssetDef,
 };
 
 export const visualizationSequences: Record<VisualizationSequenceId, VisualizationSequenceDef> = {
-  research: {
-    id: 'research',
-    title: 'Research Walkthrough',
-    intro: 'A guided visualization of the main research directions and the artifacts behind them.',
+  projects: {
+    id: 'projects',
+    title: 'Projects Walkthrough',
+    intro: 'A guided visualization of technical projects, research, and field work.',
     accent: '#7b8d96',
     steps: [
       {
-        id: 'research-intro',
-        title: 'Research Hub',
+        id: 'projects-intro',
+        title: 'Projects Hub',
         subtitle: 'Power Plant',
-        description: 'This walkthrough translates the research tab into a guided chain of artifacts. Move through the route to see each investigation represented as a distinct object.',
-        asset: sharedAssets.researchIntro,
+        description: 'This walkthrough translates the Projects tab into a guided chain of technical artifacts. Move through the route to see each project or research thread represented as its own object.',
+        asset: sharedAssets.projectsIntro,
         detail: {
-          imageLabel: 'Research Hub Image',
-          purpose: 'Turn the research tab into a visual route that can explain ideas as artifacts instead of only list entries.',
-          goals: 'Keep the research material readable while still making the experience feel spatial and guided.',
-          results: 'A sequence framework where each research topic can become its own stop with its own model, tags, and deeper explanation.',
+          imageLabel: 'Projects Hub Image',
+          purpose: 'Turn technical work into a visual route that can explain systems and outcomes as artifacts instead of only list entries.',
+          goals: 'Keep the project material readable while still making the experience feel spatial and guided.',
+          results: 'A sequence framework where each project thread can become its own stop with its own model, tags, and deeper explanation.',
         },
         cameraDistance: 15,
         cameraHeight: 6.5,
         cameraAngle: 0.3,
       },
       {
-        id: 'research-lidar',
+        id: 'project-lidar',
         title: 'LiDAR Gap Analysis',
         subtitle: 'Post-Hurricane Canopy Disturbance',
         description: 'Airborne LiDAR and canopy height modeling used to quantify hurricane-driven forest disturbance and canopy gaps.',
@@ -105,7 +105,7 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
         },
       },
       {
-        id: 'research-cloudcompare',
+        id: 'project-cloudcompare',
         title: 'Canopy Gap Driver Analysis',
         subtitle: 'CloudCompare',
         description: 'Point-cloud and height-model analysis focused on understanding the structural drivers behind canopy openings.',
@@ -120,7 +120,7 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
         },
       },
       {
-        id: 'research-lichen',
+        id: 'project-lichen',
         title: 'Lichen Paleoclimate Reconstruction',
         subtitle: 'Stable Isotopes + Modeling',
         description: 'Historic lichen material, isotopic lab workflows, and Monte Carlo modeling combined into a paleoclimate reconstruction pipeline.',
@@ -135,7 +135,7 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
         },
       },
       {
-        id: 'research-herbie',
+        id: 'project-herbie',
         title: 'Regional Climate Modeling',
         subtitle: 'HERBIE + CESM',
         description: 'Climate-model output exploration focused on extracting readable regional behavior and evaluating simulation quality.',
@@ -147,30 +147,6 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
           goals: 'Study simulation behavior, evaluate reliability, and turn climate data into something easier to interpret.',
           results: 'A stronger understanding of climate modeling workflows and how to communicate simulated regional patterns.',
         },
-      },
-    ],
-  },
-  projects: {
-    id: 'projects',
-    title: 'Projects Walkthrough',
-    intro: 'A guided visualization sequence for the main personal projects and builds.',
-    accent: '#83929b',
-    steps: [
-      {
-        id: 'projects-intro',
-        title: 'Projects Hub',
-        subtitle: 'Ferris Wheel',
-        description: 'This route turns the projects tab into a structured visual sequence. Each stop represents one project with its own prop, summary, and external link if available.',
-        asset: sharedAssets.projectIntro,
-        detail: {
-          imageLabel: 'Projects Hub Image',
-          purpose: 'Create a visual route for project storytelling without replacing the original portfolio pages.',
-          goals: 'Let each project become a checkpoint with room for narrative, visuals, and process explanation.',
-          results: 'A reusable walkthrough system that can expand as you add more project models and richer process content.',
-        },
-        cameraDistance: 15,
-        cameraHeight: 6.8,
-        cameraAngle: 0.26,
       },
       {
         id: 'project-shot-quality-overview',
@@ -199,35 +175,6 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
           purpose: 'Show how the project moves from raw input to meaningful shot-quality output.',
           goals: 'Give the viewer a place to understand system design, not just the final result.',
           results: 'A dedicated process node you can later replace with your actual model or visual pipeline artifact.',
-        },
-      },
-      {
-        id: 'project-trivia-overview',
-        title: 'OrionTrivia.org',
-        subtitle: 'Project Overview',
-        description: 'A playful trivia build centered on pacing, clarity, and easy repeat play.',
-        asset: { kind: 'shape', shape: 'frame', color: '#86949c', targetSize: 5.2, height: 3.6 },
-        tags: ['Web', 'Interaction'],
-        links: [{ label: 'Website', href: 'https://oriontrivia.org', external: true }],
-        detail: {
-          imageLabel: 'Trivia Project Overview',
-          purpose: 'Build a lightweight but memorable trivia experience with a clearer sense of identity than a generic quiz app.',
-          goals: 'Keep the loop intuitive while still making the interaction feel playful and replayable.',
-          results: 'A focused web project that demonstrates pacing, UX clarity, and personality.',
-        },
-      },
-      {
-        id: 'project-trivia-flow',
-        title: 'Trivia Interaction Flow',
-        subtitle: 'Design Node',
-        description: 'This node is intended for the visual structure of question flow, answer handling, timing, and feedback.',
-        asset: { kind: 'shape', shape: 'frame', color: '#7f8e97', targetSize: 5.4, height: 3.8 },
-        tags: ['UX', 'Flow Design'],
-        detail: {
-          imageLabel: 'Trivia Flow Diagram',
-          purpose: 'Show how the project handles question pacing, interaction rhythm, and user feedback.',
-          goals: 'Make the process legible so the walkthrough can explain the design work behind the final site.',
-          results: 'A placeholder process stop ready to be replaced with your own mockups, diagrams, or in-world model.',
         },
       },
       {
@@ -274,7 +221,74 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
         },
       },
       {
-        id: 'project-website-overview',
+        id: 'project-flood-overview',
+        title: 'Oregon Flood Analysis',
+        subtitle: 'GIS and Hydrology',
+        description: 'A geospatial and hydrologic analysis project focused on flood behavior and clearer mapping outputs.',
+        asset: { kind: 'shape', shape: 'mapTable', color: '#7c8790', targetSize: 5.8, height: 3.8 },
+        tags: ['GIS', 'Hydrology'],
+        detail: {
+          imageLabel: 'Flood Analysis Overview',
+          purpose: 'Study flooding behavior and make hydrologic information more readable through stronger geospatial outputs.',
+          goals: 'Turn layered spatial data into maps and artifacts that support understanding and communication.',
+          results: 'A practical GIS/hydrology project that ties environmental analysis to visual explanation.',
+        },
+      },
+    ],
+  },
+  creative: {
+    id: 'creative',
+    title: 'Creative Work Walkthrough',
+    intro: 'A guided walkthrough for the more expressive web and creative interaction work.',
+    accent: '#83929b',
+    steps: [
+      {
+        id: 'creative-intro',
+        title: 'Creative Work Hub',
+        subtitle: 'Ferris Wheel',
+        description: 'This route focuses on the more expressive web and interactive projects, where presentation, tone, and interface feel matter as much as the build itself.',
+        asset: sharedAssets.creativeIntro,
+        detail: {
+          imageLabel: 'Creative Work Hub Image',
+          purpose: 'Create a separate route for the more expressive, web-facing, and interface-heavy projects.',
+          goals: 'Let the creative work breathe without forcing it into the same framing as the more technical and research-heavy work.',
+          results: 'A cleaner split between technical projects and creative interaction pieces.',
+        },
+        cameraDistance: 15,
+        cameraHeight: 6.8,
+        cameraAngle: 0.26,
+      },
+      {
+        id: 'creative-trivia-overview',
+        title: 'OrionTrivia.org',
+        subtitle: 'Project Overview',
+        description: 'A playful trivia build centered on pacing, clarity, and easy repeat play.',
+        asset: { kind: 'shape', shape: 'frame', color: '#86949c', targetSize: 5.2, height: 3.6 },
+        tags: ['Web', 'Interaction'],
+        links: [{ label: 'Website', href: 'https://oriontrivia.org', external: true }],
+        detail: {
+          imageLabel: 'Trivia Project Overview',
+          purpose: 'Build a lightweight but memorable trivia experience with a clearer sense of identity than a generic quiz app.',
+          goals: 'Keep the loop intuitive while still making the interaction feel playful and replayable.',
+          results: 'A focused web project that demonstrates pacing, UX clarity, and personality.',
+        },
+      },
+      {
+        id: 'creative-trivia-flow',
+        title: 'Trivia Interaction Flow',
+        subtitle: 'Design Node',
+        description: 'This node is intended for the visual structure of question flow, answer handling, timing, and feedback.',
+        asset: { kind: 'shape', shape: 'frame', color: '#7f8e97', targetSize: 5.4, height: 3.8 },
+        tags: ['UX', 'Flow Design'],
+        detail: {
+          imageLabel: 'Trivia Flow Diagram',
+          purpose: 'Show how the project handles question pacing, interaction rhythm, and user feedback.',
+          goals: 'Make the process legible so the walkthrough can explain the design work behind the final site.',
+          results: 'A placeholder process stop ready to be replaced with your own mockups, diagrams, or in-world model.',
+        },
+      },
+      {
+        id: 'creative-website-overview',
         title: '3D Personal Website',
         subtitle: 'Project Overview',
         description: 'This project itself: a portfolio treated like a navigable world instead of a flat stack of pages.',
@@ -288,7 +302,7 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
         },
       },
       {
-        id: 'project-website-process',
+        id: 'creative-website-process',
         title: 'Website Visualization Framework',
         subtitle: 'How It Was Built',
         description: 'This node is for the site-building process itself: scene layout, UI tradeoffs, content systems, and world-driven navigation.',
@@ -299,20 +313,6 @@ export const visualizationSequences: Record<VisualizationSequenceId, Visualizati
           purpose: 'Explain how the site architecture, 3D scene logic, and content system work together.',
           goals: 'Give future viewers a direct line into the design and engineering tradeoffs behind the site.',
           results: 'A process step you can later replace with actual diagrams, route plans, or worldbuilding assets.',
-        },
-      },
-      {
-        id: 'project-flood-overview',
-        title: 'Oregon Flood Analysis',
-        subtitle: 'GIS and Hydrology',
-        description: 'A geospatial and hydrologic analysis project focused on flood behavior and clearer mapping outputs.',
-        asset: { kind: 'shape', shape: 'mapTable', color: '#7c8790', targetSize: 5.8, height: 3.8 },
-        tags: ['GIS', 'Hydrology'],
-        detail: {
-          imageLabel: 'Flood Analysis Overview',
-          purpose: 'Study flooding behavior and make hydrologic information more readable through stronger geospatial outputs.',
-          goals: 'Turn layered spatial data into maps and artifacts that support understanding and communication.',
-          results: 'A practical GIS/hydrology project that ties environmental analysis to visual explanation.',
         },
       },
     ],

@@ -21,3 +21,44 @@
   text-shadow: 0 0 6px rgba(234, 186, 80, 0.7), 0 0 14px rgba(234, 186, 80, 0.3);
   transform: scale(1.08);
 }
+
+.map-label--intro {
+  max-width: 360px;
+  white-space: normal;
+  line-height: 1.2;
+  text-align: center;
+  font-size: 17px;
+  padding: 10px 14px;
+  color: #e4d6b0;
+  background: rgba(0, 0, 0, 0.78);
+  border-color: rgba(212, 160, 64, 0.45);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.map-label--speech {
+  position: relative;
+}
+
+.map-label--speech::before,
+.map-label--speech::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.map-label--speech::before {
+  border-width: 14px 20px 14px 0;
+  border-color: transparent rgba(212, 160, 64, 0.45) transparent transparent;
+  margin-right: 0;
+}
+
+.map-label--speech::after {
+  border-width: 11px 16px 11px 0;
+  border-color: transparent rgba(0, 0, 0, 0.78) transparent transparent;
+  margin-right: -1px;
+}

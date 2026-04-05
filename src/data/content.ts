@@ -7,6 +7,7 @@ export interface PortfolioItem {
   organizationHref?: string;
   organizationExternal?: boolean;
   dates?: string;
+  visualizationStepId?: string;
   image?: string;
   imageLabel: string;
   description: string;
@@ -64,19 +65,19 @@ export const interiorContent: Record<string, InteriorContent> = {
   about: {
     title: 'About Me',
     kicker: 'Camp',
-    accent: '#66747b',
+    accent: '#b87018',
     tabs: [
       {
         id: 'profile',
         label: 'Profile',
         layout: 'about',
-        intro: 'A main portrait area, a direct introduction, and a compact read on how I tend to work.',
+        intro: 'Orion Hoch || Cornell Class of 2028',
         photoLabel: 'Main Portrait Area',
         photo: '/images/about/headshot.jpeg',
         alternatePhoto: '/images/about/casual.jpg',
         alternatePhotoLabel: 'Casual Photo Area',
-        primaryPhotoButtonLabel: 'Show Headshot',
-        alternatePhotoButtonLabel: 'Show Casual Photo',
+        primaryPhotoButtonLabel: 'Click for Serious Photo',
+        alternatePhotoButtonLabel: 'Click for Casual Photo',
         bio: [
           'I build interfaces, systems, and prototypes with a bias toward clarity, atmosphere, and strong structure. I like work that feels intentional instead of over-decorated, and I care a lot about how people move through information.',
           'Most of my projects live at the intersection of design and engineering. That usually means taking something abstract, shaping it into a coherent system, and then carrying it through implementation without flattening the original point of view.',
@@ -88,11 +89,11 @@ export const interiorContent: Record<string, InteriorContent> = {
           },
           {
             title: 'Operational Skills',
-            items: ['ArcGIS', 'QGIS', 'CloudCompare', 'Google Earth Engine', 'Mass Spectrometry', 'CESM 2.2', 'Fusion360'],
+            items: ['ArcGIS', 'QGIS', 'CloudCompare', 'Google Earth Engine', 'Mass Spectrometry', 'Gas Chromatography', 'CESM 2.2', 'Fusion360', 'Blender'],
           },
           {
             title: 'Courses',
-            items: ['Python in Climate Science', 'Programming in Java', 'GIS and Remote Sensing', 'Climate Modeling (CESM)'],
+            items: ['Python in Climate Science', 'Programming in Java', 'GIS and Remote Sensing', 'Climate Modeling (CESM)', 'Data Structures and Algorithms', 'Intro Meteorology', 'Linear Alegbra', 'Statistics', 'Object Oriented Programming'],
           },
         ],
       },
@@ -100,49 +101,62 @@ export const interiorContent: Record<string, InteriorContent> = {
   },
 
   projects: {
-    title: 'Research',
+    title: 'Projects',
     kicker: 'Power Plant',
-    accent: '#738088',
+    accent: '#a06818',
     tabs: [
       {
-        id: 'research',
-        label: 'Research',
+        id: 'projects',
+        label: 'Projects',
         layout: 'list',
-        intro: 'A header image area followed by a restrained list of research work, papers, or investigations.',
-        visualizationSequenceId: 'research',
-        visualizationLabel: 'Open 3D Walkthrough',
-        headerImageLabel: 'Research Header Image',
-        headerImage: '/images/research/tree_no.png',
+        intro: 'Technical projects, research, and field work collected in one archive.',
+        visualizationSequenceId: 'projects',
+        visualizationLabel: 'Personal Walkthrough',
+        headerImageLabel: 'Projects Header Image',
+        headerImage: '/inspiration/Xpbl_e6.png',
         items: [
           {
             title: 'Lidar Gap Analysis of Post-Hurricane Canopy Disturbance',
+            visualizationStepId: 'project-lidar',
             imageLabel: 'Research Image',
             description: 'Use this row for a concise description of the question, method, and resulting artifact or takeaway.',
             skills: ['Research', 'Systems', 'Analysis'],
           },
           {
-            title: 'Canopy Gap Driver Analysis with CloudCompare',
-            imageLabel: 'Research Image',
-            description: 'A second item for another paper, collaboration, or prototype-driven investigation.',
-            skills: ['Interaction', 'Prototyping', 'Evaluation'],
+            title: 'NBA Computer Vision Shot Quality Quantifier',
+            visualizationStepId: 'project-shot-quality-overview',
+            imageLabel: 'Project Image',
+            description: 'A short summary of what the project is, why it exists, and what makes it worth showing.',
+            skills: ['Computer Vision', 'Analytics', 'Design'],
           },
           {
             title: 'Lichen Paleoclimate Reconstruction with Mass Spectrometry and Monte Carlo Modeling',
+            visualizationStepId: 'project-lichen',
             imageLabel: 'Research Image',
             description: 'A third slot for another experiment, publication, or line of inquiry.',
             skills: ['Writing', 'Experimentation', 'Design'],
           },
-           {
-            title: 'Regional Climate Modeling with HERBIE',
-            imageLabel: 'Research Image',
-            description: 'A third slot for another experiment, publication, or line of inquiry.',
-            skills: ['Writing', 'Experimentation', 'Design'],
+
+          {
+            title: 'OpenGauntlet',
+            visualizationStepId: 'project-opengauntlet-overview',
+            imageLabel: 'Project Image',
+            description: 'A more atmospheric and interaction-heavy build focused on systems, tone, and world feel.',
+            skills: ['Creative Coding', 'Graphics', 'Interaction'],
           },
           {
-            title: 'Accuracy of Snowpiercer CESM 2.2 Simulations in the Pacific Northwest',
-            imageLabel: 'Research Image',
-            description: 'A third slot for another experiment, publication, or line of inquiry.',
-            skills: ['Writing', 'Experimentation', 'Design'],
+            title: 'Buoy Weather Station',
+            visualizationStepId: 'project-buoy-overview',
+            imageLabel: 'Project Image',
+            description: 'A field hardware and environmental sensing build centered on monitoring under real deployment constraints.',
+            skills: ['Hardware', 'Weather', 'Monitoring'],
+          },
+          {
+            title: 'Oregon Flood Analysis',
+            visualizationStepId: 'project-flood-overview',
+            imageLabel: 'Project Image',
+            description: 'A geospatial and hydrologic analysis project focused on flood behavior and clearer mapping outputs.',
+            skills: ['GIS', 'Hydrology', 'Mapping'],
           },
         ],
       },
@@ -152,17 +166,20 @@ export const interiorContent: Record<string, InteriorContent> = {
   contact: {
     title: 'Contact',
     kicker: 'Radio Tower',
-    accent: '#6b7880',
+    accent: '#8a5810',
     tabs: [
       {
         id: 'contacts',
         label: 'Contacts',
         layout: 'contacts',
+        headerImageLabel: 'Contact Header Image',
+        headerImage: '/inspiration/ss_495bc8e7336d46580963d482375de37047a86006.1920x1080.jpg',
         intro: 'The best way to contact me is through email! Currently in Ithaca during the school year, but I will always call the Pacific Northwest home.',
         contacts: [
           { label: 'Email', value: 'ogh6@cornell.edu', href: 'mailto:ogh6@cornell.edu' },
           { label: 'GitHub', value: 'github.com/orion-hoch', href: 'https://github.com/orion-hoch' },
           { label: 'LinkedIn', value: 'linkedin.com/in/orion-hoch/', href: 'https://www.linkedin.com/in/orion-hoch/' },
+          { label: 'Trivia Site', value: 'oriontrivia.org', href: 'https://oriontrivia.org'},
           { label: 'Location', value: 'Ithaca, NY / Portland, OR' },
         ],
       },
@@ -172,13 +189,15 @@ export const interiorContent: Record<string, InteriorContent> = {
   resume: {
     title: 'Experience',
     kicker: 'Bunker',
-    accent: '#616d74',
+    accent: '#7a4c10',
     tabs: [
       {
         id: 'experience',
         label: 'Experience',
         layout: 'list',
         intro: 'list of research, internship, and team leadership experience.',
+        headerImageLabel: 'Experience Header Image',
+        headerImage: '/inspiration/vBrFyWe.jpg',
         actionLabel: 'Download Resume',
         actionHref: resumePdf,
         items: [
@@ -235,7 +254,7 @@ export const interiorContent: Record<string, InteriorContent> = {
           },
         ],
         secondaryTitle: 'Additional Work',
-        secondaryIntro: 'A second section for more public-facing, quirky, or unconventional roles that still matter to the overall story.',
+        secondaryIntro: 'Not super applicable to the work I do for a career, but still important parts of my life that I thought are worth sharing!',
         secondaryItems: [
           {
             title: 'Sports Statistician',
@@ -255,62 +274,59 @@ export const interiorContent: Record<string, InteriorContent> = {
             description: 'on-air broadcasting, commentary, production, and station work for a Sports Radio Show.',
             skills: ['Broadcasting', 'Audio', 'Communication'],
           },
+                    {
+            title: 'Server and Recreation Events Coordinator',
+            organization: 'The Springs at Carman Oaks',
+            organizationHref: 'https://www.thespringsliving.com/senior-living/lake-oswego/oregon/carman-oaks',
+            imageLabel: 'Experience Image',
+            image: '/images/experience/springs.webp',
+            description: 'My first job working as a server at the restaraunt. Eventually fazed out of serving and focused more on creating recreation events for the seniors and facillitating high schoolers to volunteer their time and spend time with the residents. Also birthed my first time hosting trivia!',
+            skills: ['Broadcasting', 'Audio', 'Communication'],
+          },
         ],
       },
     ],
   },
 
   games: {
-    title: 'Personal Projects',
+    title: 'Creative',
     kicker: 'Ferris Wheel',
-    accent: '#7a8790',
+    accent: '#c07820',
     tabs: [
       {
-        id: 'projects',
-        label: 'Projects',
+        id: 'creative',
+        label: 'Creative',
         layout: 'list',
-        intro: 'A condensed project list with just the essentials: image, name, description, and skills used.',
-        visualizationSequenceId: 'projects',
-        visualizationLabel: 'Open 3D Walkthrough',
+        intro: 'A smaller archive for the more expressive and web-facing work.',
+        visualizationSequenceId: 'creative',
+        visualizationLabel: 'Personal Walkthrough',
+        headerImageLabel: 'Creative Work Header Image',
+        headerImage: '/inspiration/DnUZLdw.jpg',
         items: [
           {
-            title: 'NBA Computer Vision Shot Quality Quantifier',
-            imageLabel: 'Project Image',
-            description: 'A short summary of what the project is, why it exists, and what makes it worth showing.',
-            skills: ['React', 'TypeScript', 'Design'],
-          },
-          {
-            title: 'OrionTrivia.Org',
+            title: 'NFL/NBA Balatro',
+            visualizationStepId: 'creative-trivia-overview',
             imageLabel: 'Project Image',
             description: 'Another compact row for a side project, tool, prototype, or game-adjacent experiment.',
             skills: ['Three.js', 'UI', 'Motion'],
           },
           {
-            title: 'OpenGauntlet',
+            title: 'NFL/NBA Multiplayer Games',
+            visualizationStepId: 'creative-trivia-overview',
             imageLabel: 'Project Image',
-            description: 'A third row for another personal build with a clear one-paragraph explanation.',
-            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+            description: 'Another compact row for a side project, tool, prototype, or game-adjacent experiment.',
+            skills: ['Three.js', 'UI', 'Motion'],
           },
           {
-            title: 'Buoy Weather Station',
+            title: 'NFL/NBA Trivia Games',
+            visualizationStepId: 'creative-trivia-overview',
             imageLabel: 'Project Image',
-            description: 'A third row for another personal build with a clear one-paragraph explanation.',
-            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+            description: 'Another compact row for a side project, tool, prototype, or game-adjacent experiment.',
+            skills: ['Three.js', 'UI', 'Motion'],
           },
           {
             title: '3D Personal Website',
-            imageLabel: 'Project Image',
-            description: 'A third row for another personal build with a clear one-paragraph explanation.',
-            skills: ['Creative Coding', 'Graphics', 'Interaction'],
-          },
-          {
-            title: 'Oregon Flood Analysis',
-            imageLabel: 'Project Image',
-            description: 'A third row for another personal build with a clear one-paragraph explanation.',
-            skills: ['Creative Coding', 'Graphics', 'Interaction'],
-          },
-          {
-            title: 'Project Name Three',
+            visualizationStepId: 'creative-website-overview',
             imageLabel: 'Project Image',
             description: 'A third row for another personal build with a clear one-paragraph explanation.',
             skills: ['Creative Coding', 'Graphics', 'Interaction'],

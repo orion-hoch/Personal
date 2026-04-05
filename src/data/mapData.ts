@@ -50,7 +50,7 @@ export const buildings: BuildingDef[] = [
   {
     id: 'projects',
     type: 'power_plant',
-    label: 'RESEARCH',
+    label: 'PROJECTS',
     gridCol: 11,
     gridRow: 5,
     anchorCol: 12.5,
@@ -58,7 +58,7 @@ export const buildings: BuildingDef[] = [
     width: 3,
     height: 3,
     url: '/projects',
-    description: 'Research interests, publications, and inquiry.',
+    description: 'Technical projects, research, and field work.',
     focusOffset: [4, 3, 4],
     boxSize: [5, 3.5, 5],
     color: '#5A5A60',
@@ -108,7 +108,7 @@ export const buildings: BuildingDef[] = [
   {
     id: 'games',
     type: 'ferriswheel',
-    label: 'PERSONAL PROJECTS',
+    label: 'CREATIVE WORK',
     gridCol: 15,
     gridRow: 15,
     anchorCol: 16.26,
@@ -116,7 +116,7 @@ export const buildings: BuildingDef[] = [
     width: 3,
     height: 3,
     url: '/games',
-    description: 'Personal builds, experiments, and side projects.',
+    description: 'Creative web work and interactive experiments.',
     focusOffset: [5, 4, 5],
     boxSize: [5, 6, 5],
     color: '#6A4A3A',
@@ -133,7 +133,7 @@ export const lightSources: Array<{ col: number; row: number; radius: number; col
 
   // ─── Building lights (matched to new positions) ───
   { col: 6.41, row: 10.52, radius: 4, color: '#D4A040', intensity: 0.5 },   // camp (about)
-  { col: 12.5, row: 6.1, radius: 4, color: '#40D080', intensity: 0.5 },     // power plant
+  { col: 12.5, row: 6.1, radius: 4.4, color: '#40D080', intensity: 0.62 },   // power plant
   { col: 18.59, row: 10.52, radius: 3.5, color: '#D04040', intensity: 0.45 }, // radio tower
   { col: 8.74, row: 17.68, radius: 4.5, color: '#D4A040', intensity: 0.5 },  // bunker
   { col: 9.65, row: 16.45, radius: 3.4, color: '#E0BE74', intensity: 0.62 }, // bunker front light

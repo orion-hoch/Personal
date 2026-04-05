@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { Sparkles } from '@react-three/drei';
 import {
   EffectComposer,
@@ -16,23 +16,6 @@ const ACTIVE_LIGHT_SOURCES = lightSources.filter((source) => source.intensity >=
 function pseudoRandom(seed: number) {
   const n = Math.sin(seed * 127.1) * 43758.5453;
   return n - Math.floor(n);
-}
-
-/** Freezes shadow map updates after initial render since nothing moves */
-function FreezeStaticShadows() {
-  const { gl } = useThree();
-  const frameCount = useRef(0);
-
-  useFrame(() => {
-    if (frameCount.current < 4) {
-      frameCount.current++;
-      if (frameCount.current === 4) {
-        gl.shadowMap.autoUpdate = false;
-      }
-    }
-  });
-
-  return null;
 }
 
 function LighthouseBeacon() {
@@ -146,8 +129,6 @@ export default function Atmosphere() {
 
   return (
     <>
-      <FreezeStaticShadows />
-
       {/* Hemisphere light — warm sky / cool ground for subtle fill */}
       <hemisphereLight
         args={['#C8A882', '#2A2520', 0.22]}
