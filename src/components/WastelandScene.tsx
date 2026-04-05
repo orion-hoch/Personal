@@ -79,7 +79,7 @@ function LighthouseIntro({ building }: { building: BuildingDef }) {
       style={{ pointerEvents: 'none' }}
     >
       <div className="map-label map-label--intro map-label--speech">
-        Welcome to my Personal Website! This is the central hub with links to everything in my portfolio.
+        Hey welcome to my website! Click to explore my Portfolio!
       </div>
     </Html>
   );

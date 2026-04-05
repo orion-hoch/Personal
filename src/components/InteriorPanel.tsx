@@ -235,19 +235,18 @@ function renderPage(
 
   return (
     <>
-      {tab.headerImage && <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" />}
+      {tab.visualizationSequenceId && onOpenVisualization ? (
+        <div className="neo-walkthrough-callout neo-walkthrough-callout--hero">
+          <button className="neo-walkthrough-link" onClick={() => onOpenVisualization(tab.visualizationSequenceId!)}>
+            {tab.visualizationLabel || 'open personal walkthrough'}
+          </button>
+          <p className="neo-copy neo-copy--compact">A guided 3D route through these projects with staged props, camera beats, and detail popups.</p>
+        </div>
+      ) : tab.headerImage ? <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" /> : null}
       {tab.intro && <div className="neo-status">{tab.intro}</div>}
 
-      {(tab.visualizationSequenceId || tab.actionHref) && (
+      {tab.actionHref && (
         <div className="neo-action-row">
-          {tab.visualizationSequenceId && onOpenVisualization && (
-            <div className="neo-walkthrough-callout">
-              <button className="neo-walkthrough-link" onClick={() => onOpenVisualization(tab.visualizationSequenceId!)}>
-                {tab.visualizationLabel || 'open personal walkthrough'}
-              </button>
-              <p className="neo-copy neo-copy--compact">A guided 3D route through these projects with staged props, camera beats, and detail popups.</p>
-            </div>
-          )}
           {tab.actionHref && (
             <button className="neo-action-button" onClick={() => openHref(tab.actionHref!, tab.actionExternal)}>
               {tab.actionLabel || 'open'}

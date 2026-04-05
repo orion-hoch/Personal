@@ -147,6 +147,15 @@
   opacity: 0.6 !important;
 }
 
+/* Weak letter — still damaged, but readable */
+.neon-word.weak {
+  color: #9b4d2b;
+  text-shadow:
+    0 0 2px rgba(208, 96, 48, 0.55),
+    0 0 6px rgba(208, 96, 48, 0.22);
+  opacity: 0.88;
+}
+
 /* Flicker animation for glitchy letters */
 .neon-flicker {
   animation: neon-subtle-flicker 0.1s steps(1) infinite alternate;

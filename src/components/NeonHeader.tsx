@@ -71,7 +71,7 @@ export default function NeonHeader() {
           <span className="neon-word hot neon-flicker">a</span>
           <span className="neon-word hot">s</span>
           <span className="neon-word hot">t</span>
-          <span className="neon-word hot dead">e</span>
+          <span className="neon-word hot weak">e</span>
           <span className="neon-word hot">l</span>
           <span className="neon-word hot">a</span>
           <span className="neon-word hot neon-flicker">n</span>

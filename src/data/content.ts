@@ -76,8 +76,8 @@ export const interiorContent: Record<string, InteriorContent> = {
         photo: '/images/about/headshot.jpeg',
         alternatePhoto: '/images/about/casual.jpg',
         alternatePhotoLabel: 'Casual Photo Area',
-        primaryPhotoButtonLabel: 'Click for Serious Photo',
-        alternatePhotoButtonLabel: 'Click for Casual Photo',
+        primaryPhotoButtonLabel: 'Click for Serious',
+        alternatePhotoButtonLabel: 'Click for Casual',
         bio: [
           'I build interfaces, systems, and prototypes with a bias toward clarity, atmosphere, and strong structure. I like work that feels intentional instead of over-decorated, and I care a lot about how people move through information.',
           'Most of my projects live at the intersection of design and engineering. That usually means taking something abstract, shaping it into a coherent system, and then carrying it through implementation without flattening the original point of view.',

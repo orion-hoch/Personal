@@ -2,8 +2,33 @@
   position: fixed;
   inset: 0;
   z-index: 120;
-  background: rgba(2, 4, 6, 0.92);
+  background:
+    radial-gradient(circle at 18% 16%, rgba(28, 30, 142, 0.12), transparent 24%),
+    radial-gradient(circle at 82% 74%, rgba(53, 40, 107, 0.24), transparent 28%),
+    linear-gradient(180deg, #171717 0%, #111111 100%);
   backdrop-filter: blur(4px);
+}
+
+.visualization-overlay::before,
+.visualization-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.visualization-overlay::before {
+  background-image: url('/images/ui/panel-texture.png');
+  background-repeat: repeat;
+  background-size: 120px 120px;
+  mix-blend-mode: multiply;
+  opacity: 0.34;
+}
+
+.visualization-overlay::after {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.18) 78%, rgba(0, 0, 0, 0.42) 100%),
+    linear-gradient(180deg, rgba(28, 30, 142, 0.05), transparent 18%, transparent 82%, rgba(53, 40, 107, 0.18));
 }
 
 .visualization-overlay,
@@ -11,7 +36,7 @@
 .visualization-controls,
 .visualization-button,
 .visualization-close {
-  font-family: 'TRT-Interval', 'Inter', sans-serif;
+  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
 }
 
 .visualization-topbar {
@@ -29,18 +54,22 @@
 .visualization-close,
 .visualization-button {
   pointer-events: auto;
-  border: 1px solid rgba(123, 141, 150, 0.35);
-  background: rgba(9, 12, 15, 0.86);
-  color: #d9dfda;
+  border: 4px solid rgba(28, 30, 142, 0.6);
+  border-style: outset;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(28, 30, 142, 0.12), transparent 35%),
+    linear-gradient(180deg, rgba(53, 40, 107, 0.3), rgba(18, 2, 5, 0.92));
+  color: #e6e2ff;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  box-shadow: 4px 4px rgba(53, 40, 107, 0.7);
 }
 
 .visualization-close:hover,
 .visualization-button:hover {
-  background: rgba(16, 20, 24, 0.96);
+  color: #ffffff;
 }
 
 .visualization-hud {
@@ -50,13 +79,17 @@
   z-index: 121;
   width: min(20rem, calc(100% - 2rem));
   padding: 0.8rem;
-  border: 1px solid rgba(123, 141, 150, 0.28);
-  background: rgba(8, 11, 13, 0.82);
-  color: #dbe1dc;
+  border: 4px solid rgba(28, 30, 142, 0.44);
+  border-style: outset;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(28, 30, 142, 0.1), transparent 28%),
+    linear-gradient(180deg, rgba(53, 40, 107, 0.24), rgba(18, 2, 5, 0.9));
+  color: #f1e8ff;
+  box-shadow: 6px 6px rgba(53, 40, 107, 0.65);
 }
 
 .visualization-hud__eyebrow {
-  color: var(--visualization-accent, #7b8d96);
+  color: #c7c2ff;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.68rem;
@@ -67,11 +100,12 @@
   margin: 0;
   font-size: 1rem;
   line-height: 1.05;
+  color: #f6ebdc;
 }
 
 .visualization-hud__subtitle {
   margin-top: 0.2rem;
-  color: #95a5ad;
+  color: #b2abff;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.66rem;
@@ -79,7 +113,7 @@
 
 .visualization-hud p {
   margin: 0.65rem 0 0;
-  color: #aab3b7;
+  color: #ddd7f2;
   line-height: 1.42;
   font-size: 0.76rem;
 }
@@ -93,12 +127,19 @@
   margin-top: 0.6rem;
 }
 
+.visualization-hud__buttons {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  margin-top: 0;
+}
+
 .visualization-hud__link,
 .visualization-hud__tag,
 .visualization-hud__buttons button {
-  border: 1px solid rgba(123, 141, 150, 0.24);
-  background: rgba(11, 16, 19, 0.92);
-  color: #dce4df;
+  border: 1px solid rgba(28, 30, 142, 0.36);
+  background: rgba(22, 20, 60, 0.92);
+  color: #ece8ff;
   padding: 0.22rem 0.38rem;
   font-size: 0.62rem;
   text-transform: uppercase;
@@ -108,6 +149,13 @@
 
 .visualization-hud__buttons button {
   cursor: pointer;
+}
+
+.visualization-detail-trigger {
+  font-family: 'MS UI Gothic', 'Spectral', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
 }
 
 .visualization-nav {
@@ -140,18 +188,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(2, 4, 6, 0.82);
+  background: rgba(9, 8, 22, 0.84);
   backdrop-filter: blur(6px);
 }
 
 .visualization-detail {
   width: min(42rem, calc(100% - 2rem));
   padding: 1rem;
-  border: 1px solid rgba(123, 141, 150, 0.36);
-  background: rgba(8, 11, 13, 0.96);
-  color: #dce3de;
+  border: 4px solid rgba(28, 30, 142, 0.46);
+  border-style: outset;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(28, 30, 142, 0.1), transparent 28%),
+    linear-gradient(180deg, rgba(53, 40, 107, 0.24), rgba(18, 2, 5, 0.94));
+  color: #f0eaff;
   display: grid;
   gap: 0.9rem;
+  box-shadow: 6px 6px rgba(53, 40, 107, 0.65);
 }
 
 .visualization-detail__top {
@@ -161,7 +213,7 @@
 }
 
 .visualization-detail__eyebrow {
-  color: var(--visualization-accent, #7b8d96);
+  color: #c7c2ff;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.72rem;
@@ -170,12 +222,13 @@
 .visualization-detail h3 {
   margin: 0.2rem 0 0;
   font-size: 1.4rem;
+  color: #fff0dc;
 }
 
 .visualization-detail__image {
   min-height: 240px;
-  border: 1px solid rgba(123, 141, 150, 0.24);
-  background: rgba(16, 20, 24, 0.9);
+  border: 2px solid rgba(28, 30, 142, 0.32);
+  background: rgba(20, 20, 56, 0.82);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -188,7 +241,7 @@
 }
 
 .visualization-detail__placeholder {
-  color: #aeb7b4;
+  color: #ddd7f2;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   font-size: 0.8rem;
@@ -208,8 +261,15 @@
 
 .visualization-detail__sections p {
   margin: 0;
-  color: #abb4b7;
+  color: #ddd7f2;
   line-height: 1.55;
+}
+
+.visualization-detail__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
 }
 
 .visualization-hint {
@@ -219,9 +279,9 @@
   transform: translateX(-50%);
   z-index: 121;
   padding: 0.35rem 0.55rem;
-  background: rgba(5, 7, 9, 0.72);
-  border: 1px solid rgba(123, 141, 150, 0.2);
-  color: #c4cdca;
+  background: rgba(20, 20, 56, 0.76);
+  border: 1px solid rgba(28, 30, 142, 0.32);
+  color: #e9e6ff;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.72rem;

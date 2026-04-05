@@ -75,16 +75,11 @@ function VisualizationStage({ steps, stepIndex, moving }: { steps: Visualization
     <>
       <StepCamera position={activePosition} lookAt={lookAt} distance={distance} height={height} angle={angle} moving={moving} />
 
-      {/* Strong ambient so models are always readable */}
-      <ambientLight intensity={0.75} color="#99a8b0" />
-      {/* Hemisphere for soft sky-ground gradient fill */}
-      <hemisphereLight args={['#b0c4d0', '#1a1816', 0.4]} position={[0, 15, 0]} />
-      {/* Warm key light */}
-      <directionalLight position={[12, 15, 6]} intensity={0.6} color="#c8dae2" />
-      {/* Cool back-fill for depth */}
-      <directionalLight position={[-6, 8, -8]} intensity={0.2} color="#8090aa" />
-      {/* Spot on active asset */}
-      <pointLight position={[activePosition.x, 8, activePosition.z + 2]} intensity={3.5} color="#a0bcc8" distance={22} decay={2} />
+      <ambientLight intensity={0.76} color="#ccb07a" />
+      <hemisphereLight args={['#e4ca8e', '#21140f', 0.48]} position={[0, 15, 0]} />
+      <directionalLight position={[12, 15, 6]} intensity={0.84} color="#f4d27d" />
+      <directionalLight position={[-6, 8, -8]} intensity={0.12} color="#7d433e" />
+      <pointLight position={[activePosition.x, 8, activePosition.z + 2]} intensity={4.4} color="#f5cc6c" distance={24} decay={2} />
       <fog attach="fog" args={['#030506', 20, 68]} />
 
       <group position={[activePosition.x, 0, 0]}>
@@ -109,11 +104,11 @@ function VisualizationStage({ steps, stepIndex, moving }: { steps: Visualization
           <group key={`track-${index}`} position={midpoint} rotation={[0, angleY, 0]}>
             <mesh position={[0, 0.04, 0]}>
               <boxGeometry args={[1.1, 0.08, length]} />
-              <meshStandardMaterial color="#161b1f" emissive="#22313a" emissiveIntensity={0.2} />
+              <meshStandardMaterial color="#1a0c0f" emissive="#61111D" emissiveIntensity={0.24} />
             </mesh>
             <mesh position={[0, 0.09, 0]}>
               <boxGeometry args={[0.22, 0.03, length * 0.96]} />
-              <meshStandardMaterial color="#8ba1ad" emissive="#8ba1ad" emissiveIntensity={0.5} />
+              <meshStandardMaterial color="#d2b06f" emissive="#d2b06f" emissiveIntensity={0.52} />
             </mesh>
           </group>
         );
@@ -135,7 +130,7 @@ function VisualizationStage({ steps, stepIndex, moving }: { steps: Visualization
   );
 }
 
-function DetailPopup({ title, detail, onClose }: { title: string; detail: VisualizationDetail; onClose: () => void }) {
+function DetailPopup({ title, detail, links, onClose }: { title: string; detail: VisualizationDetail; links?: VisualizationLink[]; onClose: () => void }) {
   return (
     <div className="visualization-detail-backdrop" onClick={onClose}>
       <div className="visualization-detail" onClick={(event) => event.stopPropagation()}>
@@ -168,6 +163,18 @@ function DetailPopup({ title, detail, onClose }: { title: string; detail: Visual
             <h4>Results</h4>
             <p>{detail.results}</p>
           </section>
+          {links && links.length > 0 && (
+            <section>
+              <h4>Links</h4>
+              <div className="visualization-detail__links">
+                {links.map((link) => (
+                  <button key={`${title}-${link.label}`} className="visualization-button" onClick={() => openLink(link)}>
+                    {link.label}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
@@ -261,7 +268,7 @@ export default function VisualizationSequence({ sequenceId, initialStepId, onClo
       </Canvas>
 
       <div className="visualization-topbar">
-        <button className="visualization-close" onClick={onClose}>Return To Panel</button>
+        <button className="visualization-close" onClick={onClose}>Return To Catalog</button>
       </div>
 
       <aside className="visualization-hud">
@@ -274,18 +281,9 @@ export default function VisualizationSequence({ sequenceId, initialStepId, onClo
             {activeStep.tags.map((tag) => <span key={tag} className="visualization-hud__tag">{tag}</span>)}
           </div>
         )}
-        {activeStep.links && activeStep.links.length > 0 && (
-          <div className="visualization-hud__links">
-            {activeStep.links.map((link) => (
-              <button key={`${activeStep.id}-${link.label}`} className="visualization-button" onClick={() => openLink(link)}>
-                {link.label}
-              </button>
-            ))}
-          </div>
-        )}
         {activeStep.detail && (
           <div className="visualization-hud__buttons">
-            <button onClick={() => setDetailOpen(true)}>Open Detail</button>
+            <button className="visualization-detail-trigger" onClick={() => setDetailOpen(true)}>Open Detail</button>
           </div>
         )}
       </aside>
@@ -302,7 +300,7 @@ export default function VisualizationSequence({ sequenceId, initialStepId, onClo
       <div className="visualization-hint">W / S or Arrow Keys move through the walkthrough</div>
 
       {detailOpen && activeStep.detail && (
-        <DetailPopup title={activeStep.title} detail={activeStep.detail} onClose={() => setDetailOpen(false)} />
+        <DetailPopup title={activeStep.title} detail={activeStep.detail} links={activeStep.links} onClose={() => setDetailOpen(false)} />
       )}
     </div>
   );
