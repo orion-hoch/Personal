@@ -173,7 +173,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         label: 'Contacts',
         layout: 'contacts',
         headerImageLabel: 'Contact Header Image',
-        headerImage: '/inspiration/ss_495bc8e7336d46580963d482375de37047a86006.1920x1080.jpg',
+        headerImage: '/images/ui/sign-texture.png',
         intro: 'The best way to contact me is through email! Currently in Ithaca during the school year, but I will always call the Pacific Northwest home.',
         contacts: [
           { label: 'Email', value: 'ogh6@cornell.edu', href: 'mailto:ogh6@cornell.edu' },

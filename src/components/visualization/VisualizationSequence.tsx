@@ -14,6 +14,11 @@ interface Props {
 }
 
 function openLink(link: VisualizationLink) {
+  if (link.href.startsWith('mailto:')) {
+    window.location.href = link.href;
+    return;
+  }
+
   if (link.external || link.href.startsWith('http') || link.href.startsWith('mailto:')) {
     window.open(link.href, '_blank', 'noopener');
     return;

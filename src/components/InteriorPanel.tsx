@@ -13,12 +13,42 @@ interface Props {
 const SECTION_ORDER = ['about', 'resume', 'projects', 'games', 'contact'] as const;
 
 function openHref(href: string, external?: boolean) {
+  if (href.startsWith('mailto:')) {
+    window.location.href = href;
+    return;
+  }
+
   if (external || href.startsWith('http') || href.startsWith('mailto:')) {
     window.open(href, '_blank', 'noopener');
     return;
   }
 
   window.location.href = href;
+}
+
+async function copyText(value: string) {
+  try {
+    await navigator.clipboard.writeText(value);
+    return true;
+  } catch {
+    const textarea = document.createElement('textarea');
+    textarea.value = value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return copied;
+  }
+}
+
+async function copyOrMail(value: string) {
+  const copied = await copyText(value);
+  if (!copied) {
+    window.location.href = `mailto:${value}`;
+  }
+  return copied;
 }
 
 function MediaBox({ src, label, className = '', onClick }: { src?: string; label: string; className?: string; onClick?: () => void }) {
@@ -126,11 +156,24 @@ function PortfolioEntry({ item, onOpenVisualization }: { item: PortfolioItem; on
 }
 
 function ContactSignal({ item }: { item: ContactItem }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const ok = await copyOrMail(item.value);
+    if (!ok) return;
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1200);
+  };
+
   return (
     <div className="neo-signal-row">
       <span className="neo-signal-row__label">{item.label}</span>
-      {item.href ? (
+      {item.href && !item.href.startsWith('mailto:') ? (
         <button className="neo-text-link neo-text-link--inline" onClick={() => openHref(item.href!)}>{item.value}</button>
+      ) : item.href?.startsWith('mailto:') ? (
+        <button className="neo-text-link neo-text-link--inline" onClick={handleCopy}>
+          {copied ? `${item.value} copied` : item.value}
+        </button>
       ) : (
         <span className="neo-copy neo-copy--compact">{item.value}</span>
       )}
@@ -300,7 +343,7 @@ export default function InteriorPanel({ buildingId, onClose, onOpenVisualization
           </main>
         </div>
 
-        <footer className="neo-footer">page © wasteland.terminal — still transmitting — est. 2024</footer>
+        <footer className="neo-footer">page © wasteland.terminal — still transmitting — est. 2026</footer>
       </div>
     </div>
   );
