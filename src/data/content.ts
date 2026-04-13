@@ -134,12 +134,14 @@ export const interiorContent: Record<string, InteriorContent> = {
             skills: ['Computer Vision', 'Analytics', 'Design'],
           },
           {
-            title: 'Lichen Paleoclimate Reconstruction with Mass Spectrometry and Monte Carlo Modeling',
+            title: 'Lichen as an Atmospheric Emission Proxy — Stable Isotope Reconstruction',
             visualizationStepId: 'project-lichen',
             imageLabel: 'Research Image',
             image: '/images/project/lichen.webp',
-            description: 'A third slot for another experiment, publication, or line of inquiry.',
-            skills: ['Writing', 'Experimentation', 'Design'],
+            href: '/Lichen_Presentation.pdf',
+            external: true,
+            description: 'Used museum lichen collections (NY Botanical Garden, NY State Museum) spanning 1860–2020 as a historical record of atmospheric pollution. Crushed and encapsulated samples were analyzed on an Isotope Ratio Mass Spectrometer to track δ15N, δ34S, and δ13C over time. Nitrogen isotopes show a clear shift from heavy coal combustion signatures (+15‰) to lighter fossil fuel and NH3 sources (-9.5‰) over the 20th century. Sulfur isotopes show an upward trend post-1970 directly tied to Clean Air Act scrubber and catalytic converter mandates. Carbon isotopes required a Seuss correction to separate fossil fuel dilution from a physiological lichen response to rising CO2. Monte Carlo mixing models were used to estimate source contribution ranges and spatial emission distributions.',
+            skills: ['Mass Spectrometry', 'Stable Isotopes', 'Monte Carlo Modeling', 'Python', 'Paleoclimate'],
           },
 
           {
@@ -147,8 +149,8 @@ export const interiorContent: Record<string, InteriorContent> = {
             visualizationStepId: 'project-opengauntlet-overview',
             imageLabel: 'Project Image',
             image: '/images/project/dex.png',
-            description: 'A more atmospheric and interaction-heavy build focused on systems, tone, and world feel.',
-            skills: ['Creative Coding', 'Graphics', 'Interaction'],
+            description: 'A sub-$20 open-source wearable input device built as a one-day hackathon project. Two HW-040 rotary encoders track individual finger positions and double as haptic feedback actuators; an Adafruit 9DOF IMU (accelerometer, magnetometer, gyroscope) handles full hand orientation and gesture detection. An ESP32 runs a custom USB serial protocol to pipe finger and pose data to a host — the protocol is MCU-agnostic by design. Enclosure is 3D-printed and mechanically integrates all sensor hardware.',
+            skills: ['ESP32', 'Arduino/C++', 'Sensor Fusion', 'IMU', 'Hardware Design', 'Fusion 360'],
           },
           {
             title: 'Buoy Weather Station',
@@ -159,12 +161,14 @@ export const interiorContent: Record<string, InteriorContent> = {
             skills: ['Hardware', 'Weather', 'Monitoring'],
           },
           {
-            title: 'Oregon Flood Analysis',
+            title: 'Historical Oregon Flood Analysis — ArcGIS StoryMap',
             visualizationStepId: 'project-flood-overview',
             imageLabel: 'Project Image',
             image: '/images/project/flood.webp',
-            description: 'A geospatial and hydrologic analysis project focused on flood behavior and clearer mapping outputs.',
-            skills: ['GIS', 'Hydrology', 'Mapping'],
+            href: '/ArcGIS StoryMaps.pdf',
+            external: true,
+            description: 'An ArcGIS StoryMap produced during an internship at NWS Portland documenting major flood events across Northwest Oregon and Southwest Washington from 1964–2015. Each event (including the 1996 billion-dollar flood, the 2006 Oregon 24-hour precipitation record, and the 2012 record Marys River crest) is mapped with severity based on max crest height, dollar damage by region, and aerial/archival photography. Built with QGIS, ArcGIS, and ArcPy from NWS crest stage records, SNOTEL precipitation data, and county damage logs.',
+            skills: ['ArcGIS', 'QGIS', 'ArcPy', 'StoryMaps', 'Hydrology', 'Mapping'],
           },
         ],
       },
@@ -206,8 +210,9 @@ export const interiorContent: Record<string, InteriorContent> = {
         intro: 'list of research, internship, and team leadership experience.',
         headerImageLabel: 'Experience Header Image',
         headerImage: '/images/experience/experiences.webp',
-        actionLabel: 'Download Resume',
+        actionLabel: 'View Resume',
         actionHref: resumePdf,
+        actionExternal: true,
         items: [
           {
             title: 'Geospatial Software Intern',
