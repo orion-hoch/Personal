@@ -147,7 +147,7 @@ function PortfolioEntry({ item, onOpenVisualization }: { item: PortfolioItem; on
         )}
         {item.href && (
           <button className="neo-text-link" onClick={() => openHref(item.href!, item.external)}>
-            open transmission
+            {item.hrefLabel || 'open transmission'}
           </button>
         )}
       </div>
