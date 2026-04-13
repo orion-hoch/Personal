@@ -10,6 +10,7 @@ export interface PortfolioItem {
   visualizationStepId?: string;
   image?: string;
   imageLabel: string;
+  imageFit?: 'cover' | 'contain';
   description: string;
   skills: string[];
   href?: string;
@@ -46,6 +47,7 @@ export interface ContentTab {
   bio?: string[];
   headerImage?: string;
   headerImageLabel?: string;
+  headerImageFit?: 'cover' | 'contain';
   items?: PortfolioItem[];
   secondaryTitle?: string;
   secondaryIntro?: string;
@@ -218,6 +220,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             dates: 'Sep 2025 - Present',
             image: '/images/experience/lab_custom.png',
             imageLabel: 'Experience Image',
+            imageFit: 'contain',
             description: 'Analyzed NASA G-LiHT airborne LiDAR data to quantify canopy gaps and post-hurricane disturbance, transformed raw returns into canopy height models with CRS alignment, and supported deployment of terrestrial, airborne, and mobile sensing systems for field experiments.',
             skills: ['LiDAR', 'CloudComPy', 'GIS', 'CloudCompare'],
           },
@@ -238,6 +241,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             dates: 'May 2025 - Aug 2025',
             image: '/images/experience/COIL.png',
             imageLabel: 'Experience Image',
+            imageFit: 'contain',
             description: 'Helped design and run greenhouse CO2-collar experiments on fungal hyphae impacts on nitrogen fixation, processed gas and biological samples with chromatography, mass spectrometry, and stable isotope workflows, and collaborated on isotopic analysis for paleoclimate reconstruction using a historic lichen collection and Monte Carlo gas modeling.',
             skills: ['Mass Spectrometry', 'Gas Chromatography', 'Stable Isotopes', 'Climate Modeling'],
           },
@@ -249,6 +253,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             dates: 'May 2023 - Aug 2023',
             image: '/images/experience/weather_service.png',
             imageLabel: 'Experience Image',
+            imageFit: 'contain',
             description: 'Built vector, LiDAR, raster, and hydrograph maps in QGIS and ArcGIS for emergency and NWS use, and analyzed hydrologic sensor records across the Columbia River Basin to study historical flood inundation and support StoryMap creation with ArcPy.',
             skills: ['QGIS', 'ArcGIS', 'ArcPy', 'Hydrologic Modeling'],
           },
@@ -262,6 +267,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             organizationHref: 'https://cornellbigred.com/',
             imageLabel: 'Experience Image',
             image: '/images/experience/Cornell_sports_logo.png',
+            imageFit: 'contain',
             description: 'Covering live sports statistics, game-day tracking, and support for athletic events.',
             skills: ['Sports Statistics', 'Live Data', 'Game Day Operations'],
           },
@@ -271,6 +277,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             organizationHref: 'https://wvbr.com/',
             imageLabel: 'Experience Image',
             image: '/images/experience/wvbr.avif',
+            imageFit: 'contain',
             description: 'on-air broadcasting, commentary, production, and station work for a Sports Radio Show.',
             skills: ['Broadcasting', 'Audio', 'Communication'],
           },
@@ -280,6 +287,7 @@ export const interiorContent: Record<string, InteriorContent> = {
             organizationHref: 'https://www.thespringsliving.com/senior-living/lake-oswego/oregon/carman-oaks',
             imageLabel: 'Experience Image',
             image: '/images/experience/springs.webp',
+            imageFit: 'contain',
             description: 'My first job working as a server at the restaraunt. Eventually fazed out of serving and focused more on creating recreation events for the seniors and facillitating high schoolers to volunteer their time and spend time with the residents. Also birthed my first time hosting trivia!',
             skills: ['Broadcasting', 'Audio', 'Communication'],
           },

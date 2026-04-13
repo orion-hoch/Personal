@@ -122,7 +122,7 @@ function AboutPhotoSwitcher({ tab }: { tab: ContentTab }) {
 function PortfolioEntry({ item, onOpenVisualization }: { item: PortfolioItem; onOpenVisualization?: () => void }) {
   return (
     <article className="neo-entry">
-      <MediaBox src={item.image} label={item.imageLabel} className="neo-entry__media" onClick={onOpenVisualization} />
+      <MediaBox src={item.image} label={item.imageLabel} className={`neo-entry__media${item.imageFit === 'contain' ? ' neo-media--fit' : ''}`} onClick={onOpenVisualization} />
       <div className="neo-entry__body">
         <div className="neo-entry__title">{item.title}</div>
         {(item.organization || item.dates) && (
@@ -223,7 +223,7 @@ function renderPage(
   if (tab.layout === 'contacts') {
     return (
       <>
-        {tab.headerImage && <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" />}
+        {tab.headerImage && <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className={`neo-header-media${tab.headerImageFit === 'contain' ? ' neo-media--fit' : ''}`} />}
         {tab.intro && <div className="neo-status">{tab.intro}</div>}
         <div className="neo-divider">entries</div>
         <div className="neo-signal-board">
@@ -242,7 +242,7 @@ function renderPage(
           </button>
           <p className="neo-copy neo-copy--compact">A guided 3D route through these projects with staged props, camera beats, and detail popups.</p>
         </div>
-      ) : tab.headerImage ? <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className="neo-header-media" /> : null}
+      ) : tab.headerImage ? <MediaBox src={tab.headerImage} label={tab.headerImageLabel || 'header image'} className={`neo-header-media${tab.headerImageFit === 'contain' ? ' neo-media--fit' : ''}`} /> : null}
       {tab.intro && <div className="neo-status">{tab.intro}</div>}
 
       {tab.actionHref && (
