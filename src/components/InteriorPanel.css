@@ -206,7 +206,11 @@
   color: var(--neo-green);
 }
 
-.neo-nav__item.active,
+.neo-nav__item.active {
+  color: #c084fc;
+  text-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
+}
+
 .neo-nav__item:hover,
 .neo-linklist__item:hover,
 .neo-text-link:hover,
