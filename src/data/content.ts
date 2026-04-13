@@ -173,7 +173,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         label: 'Contacts',
         layout: 'contacts',
         headerImageLabel: 'Contact Header Image',
-        headerImage: '/images/ui/sign-texture.png',
+        headerImage: '/images/contact/contact.webp',
         intro: 'The best way to contact me is through email! Currently in Ithaca during the school year, but I will always call the Pacific Northwest home.',
         contacts: [
           { label: 'Email', value: 'ogh6@cornell.edu', href: 'mailto:ogh6@cornell.edu' },
@@ -197,7 +197,7 @@ export const interiorContent: Record<string, InteriorContent> = {
         layout: 'list',
         intro: 'list of research, internship, and team leadership experience.',
         headerImageLabel: 'Experience Header Image',
-        headerImage: '/images/ui/vBrFyWe.jpg',
+        headerImage: '/images/experience/experiences.webp',
         actionLabel: 'Download Resume',
         actionHref: resumePdf,
         items: [
