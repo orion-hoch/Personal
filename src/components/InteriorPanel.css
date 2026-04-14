@@ -122,7 +122,7 @@
     radial-gradient(circle at 18% 20%, rgba(28, 30, 142, 0.1), transparent 35%),
     linear-gradient(180deg, rgba(53, 40, 107, 0.3), rgba(18, 2, 5, 0.92));
   color: var(--neo-pink);
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 16px;
   padding: 4px 8px;
   cursor: pointer;
@@ -162,7 +162,7 @@
 }
 
 .neo-sidebar__label {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 15px;
   color: var(--neo-pink);
   margin-bottom: 8px;
@@ -170,7 +170,7 @@
 
 .neo-radio-track,
 .neo-smallcopy {
-  font-family: 'MS UI Gothic', 'Spectral', serif;
+  font-family: 'Spectral', serif;
   color: var(--neo-copy);
   font-size: 10pt;
   line-height: 1.45;
@@ -197,7 +197,7 @@
 }
 
 .neo-nav__item {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 18px;
 }
 
@@ -228,7 +228,7 @@
     linear-gradient(180deg, rgba(53, 40, 107, 0.2), rgba(18, 2, 5, 0.9));
   color: var(--neo-pink);
   padding: 18px 20px 22px;
-  font-family: 'MS UI Gothic', 'Spectral', serif;
+  font-family: 'Spectral', serif;
   box-shadow: 6px 6px var(--neo-border-soft);
 }
 
@@ -247,7 +247,7 @@
   gap: 10px;
   margin: 20px 0 12px;
   color: var(--neo-green);
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 15px;
 }
 
@@ -315,7 +315,7 @@
 }
 
 .neo-minihead {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   color: var(--neo-green);
   font-size: 15px;
   margin-bottom: 8px;
@@ -354,7 +354,7 @@
   text-align: left;
   cursor: pointer;
   padding: 0;
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 24px;
   line-height: 1;
   text-transform: lowercase;
@@ -376,7 +376,7 @@
   border: 2px solid var(--neo-border);
   background: var(--neo-panel);
   padding: 6px 10px;
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   color: var(--neo-green);
   font-size: 16px;
   text-transform: lowercase;
@@ -428,7 +428,7 @@
   flex-wrap: wrap;
   gap: 8px 14px;
   color: var(--neo-green);
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 14px;
   margin-bottom: 6px;
 }
@@ -444,7 +444,7 @@
   border: 2px solid var(--neo-border-soft);
   color: var(--neo-green-soft);
   padding: 2px 6px;
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 13px;
 }
 
@@ -465,7 +465,7 @@
 .neo-signal-row__label {
   display: block;
   color: var(--neo-green);
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 14px;
   margin-bottom: 4px;
 }
@@ -477,7 +477,7 @@
 }
 
 .neo-linklist__item {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 15px;
   color: var(--neo-green);
   text-align: left;
@@ -515,7 +515,7 @@
 }
 
 .neo-media__label {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 14px;
   color: var(--neo-green);
   text-align: center;
@@ -529,7 +529,7 @@
 }
 
 .neo-text-link {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   font-size: 17px;
   color: var(--neo-pink);
   text-decoration: underline;
@@ -566,7 +566,7 @@
 }
 
 .neo-route-card__label {
-  font-family: 'decoder', 'Noplato', 'Courier New', monospace;
+  font-family: 'VT323', 'Courier New', monospace;
   color: var(--neo-green);
   font-size: 15px;
   text-transform: uppercase;
