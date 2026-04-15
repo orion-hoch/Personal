@@ -86,7 +86,7 @@ function App() {
         bottom: 16,
         left: '50%',
         transform: 'translateX(-50%)',
-        fontFamily: "'VT323', 'Courier New', monospace",
+        fontFamily: "'Spectral', serif",
         fontSize: 16,
         color: 'rgba(236, 231, 223, 0.82)',
         letterSpacing: 2,

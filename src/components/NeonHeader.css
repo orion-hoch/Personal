@@ -79,7 +79,7 @@
 }
 
 .neon-text {
-  font-family: 'VT323', 'Courier New', monospace;
+  font-family: 'Spectral', serif;
   font-size: clamp(16px, 2.8vw, 28px);
   font-weight: 400;
   margin: 0;

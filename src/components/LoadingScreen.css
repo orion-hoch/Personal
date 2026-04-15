@@ -36,7 +36,7 @@
 
 .loading-screen__subtitle {
   color: #7a7570;
-  font-family: 'VT323', 'Courier New', monospace;
+  font-family: 'Spectral', serif;
   font-size: 0.92rem;
   letter-spacing: 0.08em;
   line-height: 1.5;
@@ -195,14 +195,14 @@
 
 .loading-screen__tip {
   color: #5A5550;
-  font-family: 'VT323', 'Courier New', monospace;
+  font-family: 'Spectral', serif;
   font-size: 0.82rem;
   letter-spacing: 0.06em;
 }
 
 .loading-screen__label {
   color: #9a9590;
-  font-family: 'VT323', 'Courier New', monospace;
+  font-family: 'Spectral', serif;
   font-size: 0.88rem;
   letter-spacing: 0.14rem;
   text-transform: uppercase;
